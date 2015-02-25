@@ -82,26 +82,26 @@ public class Mouse {
 		return hunger > amt;
 	}
 
-	private boolean canMove(Direction d) {
+	private boolean canMove(Direction d, int steps) {
 		int size = MouseSim.getWorldSize();
 
 		switch(d) {
 			case UP:
-				return this.position.row > 0;
+				return this.position.row - steps >= 0 ;
 			case DOWN:
-				return this.position.row < size-1;
+				return this.position.row + steps <= size-1;
 			case LEFT:
-				return this.position.col > 0;
+				return this.position.col - steps >= 0;
 			case RIGHT:
-				return this.position.col < size-1;
+				return this.position.col + steps <= size-1;
 			case UPLEFT:
-				return this.position.row > 0 && this.position.col > 0;
+				return this.position.row - steps >= 0 && this.position.col - steps >= 0;
 			case UPRIGHT:
-				return this.position.row > 0 && this.position.col < size-1;
+				return this.position.row - steps >= 0 && this.position.col + steps <= size-1;
 			case DOWNLEFT:
-				return this.position.row < size-1 && this.position.col > 0;
+				return this.position.row + steps <= size-1 && this.position.col - steps >= 0;
 			case DOWNRIGHT:
-				return this.position.row < size-1 && this.position.col < size-1;
+				return this.position.row + steps <= size-1 && this.position.col + steps <= size-1;
 			default:
 				return false;
 		}
@@ -121,89 +121,88 @@ public class Mouse {
 		return isAlive;
 	}
 
-	private void move(Direction d) {
+	private void move(Direction d, int steps) {
 
 		MouseSim.getWorld().getWorldNode(this.position).remove(this);
 
 		switch (d){
 			case UP:
-				position.row--;
+				position.row -= steps;
 			break;
 			case DOWN:
-				position.row++;
+				position.row += steps;
 			break;
 			case LEFT:
-				position.col--;
+				position.col -= steps;
 			break;
 			case RIGHT:
-				position.col++;
+				position.col += steps;
 			break;
 			case UPLEFT:
-				position.row--;
-				position.col--;
+				position.row -= steps;
+				position.col -= steps;
 			break;
 			case UPRIGHT:
-				position.row--;
-				position.col++;
+				position.row -= steps;
+				position.col += steps;
 			break;
 			case DOWNLEFT:
-				position.row++;
-				position.col--;
+				position.row += steps;
+				position.col -= steps;
 			break;
 			case DOWNRIGHT:
-				position.row++;
-				position.col++;
+				position.row += steps;
+				position.col += steps;
 			break;
 			default:
 		}
-
 
 		MouseSim.getWorld().getWorldNode(this.position).add(this);
 
 		updateFatigue();
 	}
 
-	private void moveRandom() {
+	private void moveRandom(int steps) {
 
 		switch(MouseSim.rand.nextInt(9)){
 			case 0:
-				if(canMove(Direction.UP)) {
-					move(Direction.UP);
+				if(canMove(Direction.UP, steps)) {
+					move(Direction.UP, steps);
 				}
 			break;
 			case 1:
-				if(canMove(Direction.DOWN)) {
-					move(Direction.DOWN);
+				if(canMove(Direction.DOWN, steps)) {
+					move(Direction.DOWN, steps);
 				}
 			break;
 			case 2:
-				if(canMove(Direction.LEFT)) {
-					move(Direction.LEFT);
+				if(canMove(Direction.LEFT, steps)) {
+					move(Direction.LEFT, steps);
 				}
 			break;
 			case 3:
-				if(canMove(Direction.RIGHT)) {
-					move(Direction.RIGHT);
+				if(canMove(Direction.RIGHT, steps)) {
+					move(Direction.RIGHT, steps);
 				}
 			break;
 			case 4:
-				if(canMove(Direction.UPLEFT)) {
-					move(Direction.UPLEFT);
+				if(canMove(Direction.UPLEFT, steps)) {
+					move(Direction.UPLEFT, steps);
 				}
 			break;
 			case 5:
-				if(canMove(Direction.UPRIGHT)) {
-					move(Direction.UPRIGHT);
+				if(canMove(Direction.UPRIGHT, steps)) {
+					move(Direction.UPRIGHT, steps);
 				}
 			break;
 			case 6:
-				if(canMove(Direction.DOWNLEFT)) {
-					move(Direction.DOWNLEFT);
+				if(canMove(Direction.DOWNLEFT, steps)) {
+					move(Direction.DOWNLEFT, steps);
 				}
 			break;
 			case 7:
-				if(canMove(Direction.DOWNRIGHT)) {
-					move(Direction.DOWNRIGHT);
+				if(canMove(Direction.DOWNRIGHT, steps)) {
+					move(Direction.DOWNRIGHT, steps);
 				}
 			break;
 			default:
@@ -248,10 +247,10 @@ public class Mouse {
 	public void update() {
 		if(!isAlive) return;
 		
-		moveRandom();
+		moveRandom(1); // Mouse can move 1 step per cyle
 		updateAge();
 		updateHunger();
-		//updateFatigue called in move
+		//updateFatigue is called in move
 
 		printStats();
 	}
