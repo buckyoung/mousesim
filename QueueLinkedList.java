@@ -56,7 +56,8 @@ public class QueueLinkedList<T> {
         StringBuilder sb = new StringBuilder();
         Node tmp = first;
         while (tmp != null) {
-            sb.append(tmp.ele).append("\n");
+            sb.append(tmp.ele).append("\n"); // latest last
+            //sb.insert(0, tmp.ele).insert(0, "\n"); // latest first
             tmp = tmp.next;
         }
         return sb.toString();

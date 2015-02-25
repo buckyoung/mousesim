@@ -29,19 +29,38 @@ public class WorldNode {
 		this.representation = IMG_MOUSE;
 	}
 
+	public Food getAnyFood() {
+		if(containsAny(Food.class)) {
+			for(Object o : container) {
+				if(Food.class.isInstance(o)) {
+					return (Food) remove(o);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public boolean hasFood() {
+		return containsAny(Food.class);
+	}
+
 	private boolean containsAny(Class clazz) {
-		for (Object e : container) {
-			if (clazz.isInstance(e)) {
+		for (Object o : container) {
+			if (clazz.isInstance(o)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void remove(Object o) {
+	public Object remove(Object o) {
 		if(container.contains(o)){
 			container.remove(o);
+			return o;
 		}
+
+		return null;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 public class Stream {
 	
-	private static final int MAXHEADLINES = 8;
+	private static final int MAXHEADLINES = 5;
 	private static QueueLinkedList<String> headlines = new QueueLinkedList<>(MAXHEADLINES);
 
 	public static void update(String s) {

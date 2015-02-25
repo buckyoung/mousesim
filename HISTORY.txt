@@ -1,1 +1,40 @@
 0: Harvey Wallsqueaker was born!
+0: Norman Squeakswell was born!
+0: Ray Charles was born!
+0: Splinter was born!
+0: Sam Mouser was born!
+139: Norman Squeakswell decided to eat!
+187: Splinter decided to take a little snooze... zZzz...
+197: Norman Squeakswell decided to eat!
+200: Harvey Wallsqueaker decided to take a little snooze... zZzz...
+220: Sam Mouser decided to take a little snooze... zZzz...
+241: Ray Charles has starved to death! RIP (0-241)
+245: Norman Squeakswell decided to eat!
+262: Sam Mouser decided to eat!
+319: Splinter decided to eat!
+325: Sam Mouser decided to eat!
+338: Splinter decided to take a little snooze... zZzz...
+349: Harvey Wallsqueaker decided to take a little snooze... zZzz...
+351: Harvey Wallsqueaker has died of old age! RIP (0-351)
+412: Sam Mouser decided to take a little snooze... zZzz...
+437: Norman Squeakswell decided to eat!
+481: Splinter decided to take a little snooze... zZzz...
+505: Norman Squeakswell has died of old age! RIP (0-505)
+529: Splinter decided to eat!
+587: Sam Mouser decided to eat!
+599: Sam Mouser decided to take a little snooze... zZzz...
+632: Splinter decided to take a little snooze... zZzz...
+639: Sam Mouser has died of old age! RIP (0-639)
+639: Sam Mouser was reincarnated! Amazing!
+724: Splinter decided to eat!
+774: Splinter has died of old age! RIP (0-774)
+774: Sam Mouser is the last mouse alive! x_x
+829: Sam Mouser decided to take a little snooze... zZzz...
+906: Sam Mouser decided to eat!
+977: Sam Mouser decided to eat!
+
+1279: Sam Mouser has died of old age! RIP (0-1279)
+1203: Sam Mouser decided to take a little snooze... zZzz...
+1136: Sam Mouser decided to eat!
+1116: Sam Mouser decided to eat!
+1016: Sam Mouser decided to take a little snooze... zZzz...

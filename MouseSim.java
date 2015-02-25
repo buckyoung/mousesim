@@ -5,8 +5,8 @@ public class MouseSim {
 	public static final boolean DEBUG = true;
 	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
 
-	private static final int GAMESPEED = 300;
-	private static final int WORLDSIZE = 20;
+	private static final int GAMESPEED = 200;
+	private static final int WORLDSIZE = 30;
 	private static int runtime;
 	private static boolean isRunning;
 	private static ArrayList<Mouse> mice;
@@ -54,6 +54,9 @@ public class MouseSim {
 
 			if(deadMouse != null) { //REDO deadmouse
 				mice.remove(deadMouse); //REDO deadmouse
+				if(mice.size() == 1) {
+					Stream.update(mice.get(0).getName() + " is the last mouse alive! x_x");
+				}
 			} //REDO deadmouse
 
 			if(mice.isEmpty()) {
