@@ -1,34 +1,36 @@
-import java.util.Random;
-
 public class Food {
-	
-	private static final int FOODSCARCITY = 10;
-	private static final int MAXFOOD = 8;
-	private static final double NUTRITION = 32.43;
-	private static int currentFood = 0;
 
-	private static Random rand = new Random(Double.doubleToLongBits(Math.random()));
+	private static final double MIN_NUTRITION = 4.23;
+	private static final double MAX_NUTRITION = 34.532;
+	private final double NUTRITION;
+
+	private static final int MAX_FOOD = 4;
+	private static int curr_food = 0;
 
 
-	public static boolean canCreate() {
-		return currentFood < MAXFOOD;
+	private Food() {
+		NUTRITION = MIN_NUTRITION+(MAX_NUTRITION-MIN_NUTRITION)*MouseSim.rand.nextDouble();
 	}
 
-	public static void createRandom(World world) {
-		if(canCreate() && rand.nextInt(FOODSCARCITY) == 0){
-			Position p = new Position();
-			p.row = rand.nextInt(MouseSim.WORLDSIZE);
-			p.col = rand.nextInt(MouseSim.WORLDSIZE);
-			world.addFood(p);
-			currentFood++;
+	private static boolean canCreate() {
+		return curr_food < MAX_FOOD;
+	}
+
+	private static Food create() {
+		if(canCreate()) {
+			curr_food++;
+			return new Food();
+		}
+
+		return null;
+	}
+
+	public static void createRandom() {
+		Food food = create();
+
+		if(food != null) {
+			MouseSim.getWorld().getRandomWorldNode().add((Food)food);
 		}
 	}
 
-	public static void eatenBy(Mouse mouse) {
-		currentFood--;
-
-		if(mouse.canEat(NUTRITION)) {
-			mouse.eat(NUTRITION);
-		}
-	}
 }

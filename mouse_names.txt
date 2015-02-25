@@ -1,2 +1,6 @@
+//TODO: Random name generator
+// Perhaps support generations (generation = 2, if same name a dad, then Harvey WallSqueaker II, etc etc)
+
 Harvey Wallsqueaker
 Norman Squeakswell
+Splinter

@@ -1,56 +1,72 @@
-public class MouseSim {
+import java.util.ArrayList;
+import java.util.Random;
 
-	private static final int GAMESPEED = 200;
-	public static final int WORLDSIZE = 20;
-	private static boolean isRunning;
+public class MouseSim {
+	public static final boolean DEBUG = true;
+	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
+
+	private static final int GAMESPEED = 300;
+	private static final int WORLDSIZE = 20;
 	private static int runtime;
-	private static Mouse mouse1;
-	private static Mouse mouse2;
+	private static boolean isRunning;
+	private static ArrayList<Mouse> mice;
 	private static World world;
 	private static String endedReason;
-
-	public static void update(Mouse mouse) {
-		world.resetCell(mouse.position);
-		mouse.moveRandom(world);
-		mouse.update();
-		Food.createRandom(world);
-		world.updateMousePosition(mouse);
-	}
-
-	public static void render() {
-		clearConsole();
-		System.out.println("Runtime: " + runtime++); //debug
-		world.render();
-	}
 
 	// **** MAIN ****
 	public static void main(String[] args) {
 		runtime = 0;
-		mouse1 = new Mouse("Harvey Wallsqueaker", new Position(0, 0));
-		mouse2 = new Mouse("Norman Squeakswell", new Position(WORLDSIZE-1, WORLDSIZE-1));
-
 		world = new World(WORLDSIZE);
+		
+		mice = new ArrayList<>();
+
+		//REDO manual mice add's
+		mice.add(new Mouse("Harvey Wallsqueaker", new Position(0, 0)));
+		mice.add(new Mouse("Norman Squeakswell", new Position(WORLDSIZE-1, WORLDSIZE-1)));
+		mice.add(new Mouse("Ray Charles", new Position(WORLDSIZE/2, WORLDSIZE/2)));
+		mice.add(new Mouse("Splinter", new Position(5, 5)));
+		mice.add(new Mouse("Sam Mouser", new Position(10, 5)));		
 
 		isRunning = true;
 		gameLoop();
 	}
 
-	public static void gameOver(String reason) {
+	private final static void clearConsole() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	private static void endGame(String reason) {
 		endedReason = reason;
+		Stream.close();
 		isRunning = false;
 	}
 
-	public static void gameLoop() {
+	private static void gameLoop() {
+		Mouse deadMouse; //REDO deadmouse
 		while(isRunning) {
-			update(mouse1);
-			update(mouse2);
-			render();
+			deadMouse = null; //REDO deadmouse
 
-			mouse1.printStats();
-			mouse2.printStats();
+			for(Mouse m : mice) {
+				m.update();
+				if(!m.isAlive()) deadMouse = m; //REDO deadmouse
+			}
+
+			if(deadMouse != null) { //REDO deadmouse
+				mice.remove(deadMouse); //REDO deadmouse
+			} //REDO deadmouse
+
+			if(mice.isEmpty()) {
+				endGame("all the mice have died.");
+			}
+
+			Food.createRandom(); //REDO
+
+			render();
+			Stream.print();
 			
 			try{
-				Thread.sleep(50000/GAMESPEED); //the timing mechanism
+				Thread.sleep(50000/GAMESPEED);
 			} catch (InterruptedException e) {
 				return;
 			}
@@ -60,8 +76,22 @@ public class MouseSim {
 		System.out.println("The game has ended because... " + endedReason);
 	}
 
-	public final static void clearConsole() {
-		System.out.print("\033[H\033[2J");
-		System.out.flush();
+	public static int getRuntime() {
+		return runtime;
 	}
+
+	public static World getWorld() {
+		return world;
+	}
+
+	public static int getWorldSize() {
+		return WORLDSIZE;
+	}
+
+	private static void render() {
+		clearConsole();
+		System.out.println("Runtime: " + runtime++); //debug
+		world.render();
+	}
+
 }

@@ -3,8 +3,9 @@ import java.util.Queue;
 
 public class QueueLinkedList<T> {
 
-    private int total;
+    private Out history;
 
+    private int total;
     private Node first, last;
 
     private final int maxsize;
@@ -15,11 +16,12 @@ public class QueueLinkedList<T> {
     }
 
     public QueueLinkedList(int size) { 
-        maxsize = s;
+        maxsize = size;
+
+        history = new Out("HISTORY.txt");
     }
 
-    public QueueLinkedList<T> enqueue(T ele)
-    {
+    public QueueLinkedList<T> enqueue(T ele) {
         Node current = last;
         last = new Node();
         last.ele = ele;
@@ -27,16 +29,25 @@ public class QueueLinkedList<T> {
         if (total++ == 0) first = last;
         else current.next = last;
 
+        while(total > maxsize) {
+            this.dequeue();
+        }
+
         return this;
     }
 
-    public T dequeue()
-    {
+    private void dequeue() {
         if (total == 0) throw new java.util.NoSuchElementException();
         T ele = first.ele;
         first = first.next;
         if (--total == 0) last = null;
-        return ele;
+        
+        history.println(ele);
+    }
+
+    public void close() {
+        history.println(this.toString());
+        history.close();
     }
 
     @Override
@@ -45,7 +56,7 @@ public class QueueLinkedList<T> {
         StringBuilder sb = new StringBuilder();
         Node tmp = first;
         while (tmp != null) {
-            sb.append(tmp.ele).append(", ");
+            sb.append(tmp.ele).append("\n");
             tmp = tmp.next;
         }
         return sb.toString();
