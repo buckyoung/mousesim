@@ -18,7 +18,7 @@ public class Mouse {
 
 	private static final double MIN_FATIGUERATE = 0.01;
 	private static final double MAX_FATIGUERATE = 0.54;
-	private static final double MAX_FATIGUE = 100.0; // Max fatigue need before death
+	private static final double MAX_FATIGUE = 100.0; // Max fatidgue need before death
 	private final double FATIGUERATE;
 	
 	private double hunger, fatigue;
@@ -117,11 +117,11 @@ public class Mouse {
 		//Primative AI
 		WorldNode currentLocation = MouseSim.getWorld().getWorldNode(this.position);
 
-		if(currentLocation.hasFood() && hunger > 35.0) {
+		if(currentLocation.hasFood() && hunger > 35.0) {//redo
 			return MouseAction.EAT;
 		}
 
-		if(fatigue > 70) {
+		if(fatigue > 70) {//redo
 			return MouseAction.REST;
 		}
 
@@ -132,10 +132,8 @@ public class Mouse {
 		String message = name + " has " + reason + "! RIP (" + birthday + "-" + MouseSim.getRuntime() + ")";
 		Stream.update(message);
 
-		this.isAlive = false;
-		
-		//Remove from World if not reincarnated
-		if(!this.reincarnation()) MouseSim.getWorld().getWorldNode(this.position).remove(this);
+		//Kill if not reincarnated
+		if(!this.reincarnation()) this.isAlive = false;;
 	}
 
 	private void eat(Food food) {
@@ -147,6 +145,10 @@ public class Mouse {
 
 	public String getName() {
 		return name;
+	}
+
+	public Position getPosition() {
+		return position;
 	}
 
 	public boolean isAlive() {
@@ -265,7 +267,6 @@ public class Mouse {
 
 	private boolean reincarnation() { //REDO
 		if(MouseSim.rand.nextInt(5) == 0) {
-			this.isAlive = true;
 			this.hunger = this.hunger / 2;
 			this.fatigue = this.fatigue / 3;
 			this.age = 0.0;
@@ -279,7 +280,7 @@ public class Mouse {
 	public void update() {
 		if(!isAlive) return;
 		
-		updateAge();
+		updateAge(); if(!isAlive) return;
 		printStats();
 
 		if(skipCycles != 0) {
@@ -289,21 +290,21 @@ public class Mouse {
 
 		switch(chooseAction()) {
 			case MOVE:
-				moveRandom(this.walkRate);
-				adjustHunger(HUNGERRATE);
+				moveRandom(this.walkRate); if(!isAlive) return;
+				adjustHunger(HUNGERRATE); if(!isAlive) return;
 			break;
 
 			case EAT:
 				Stream.update(name+" decided to eat!");
 				eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood());
-				skipCycles = 7; // Skip 5 when eating!
+				skipCycles = 7;
 			break;
 
 			case REST:
 				Stream.update(name+" decided to take a little snooze... zZzz...");
 				adjustFatigue(-RESTRATE * 30);
-				skipCycles = 30; // Skip 10 when resting!
-				adjustHunger(HUNGERRATE * 3);
+				skipCycles = 30;
+				adjustHunger(HUNGERRATE * 3); if(!isAlive) return;
 			break;
 
 			default:

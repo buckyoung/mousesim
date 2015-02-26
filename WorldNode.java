@@ -29,7 +29,7 @@ public class WorldNode {
 		this.representation = IMG_MOUSE;
 	}
 
-	public Food getAnyFood() {
+	public Food getAnyFood() { //REDO: shoudlnt return it -- mouse should eat it in place, so it can eat just a bit of it
 		if(containsAny(Food.class)) {
 			for(Object o : container) {
 				if(Food.class.isInstance(o)) {
