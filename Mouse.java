@@ -116,7 +116,8 @@ public class Mouse {
 			break;
 
 			case SEX:
-				this.adjustArousal(-10000.0);
+				this.adjustArousal(-10000.0); //redo
+				Colony.generateBaby(this.position, this, this); //redo -- get mother?!
 				Stream.update(getName() + " is feeling frisky...");
 			break;
 
@@ -272,7 +273,7 @@ public class Mouse {
 		//* Private Constants
 		private static final double HUNGER_LIMIT = 50.0; //Redo: set on a per-mouse basis -- pass to child
 		private static final double FATIGUE_LIMIT = 70.0; //Redo: set on a per-mouse basis -- pass to child
-		private static final double AROUSAL_LIMIT = 30.0; //Redo: set on a per-mouse basis -- pass to child
+		private static final double AROUSAL_LIMIT = 90.0; //Redo: set on a per-mouse basis -- pass to child
 		private static final int CHANGE_DIRECTION_RATE = 2; // 1 in ...
 
 		private Mouse body;

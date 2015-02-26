@@ -7,11 +7,14 @@ public class Colony {
 
 	//* Private Fields
 	private static LinkedList<Mouse> mice = new LinkedList<>();
+	private static LinkedList<Mouse> bornMice = new LinkedList<>();
 	private static LinkedList<Mouse> deadMice = new LinkedList<>();
 
 	//* Public Methods
-	public static void generateBaby(Mouse father, Mouse mother) {
-		
+	public static void generateBaby(Position position, Mouse father, Mouse mother) {
+		if(canCreateMouse()) {
+			bornMice.add(new Mouse(position, father, mother));
+		}
 	}
 
 	public static void generateMice(int number) { //REDO: generate arbitrary amount with names and stuff
@@ -20,6 +23,7 @@ public class Colony {
 		mice.add(new Mouse(new Position(MouseSim.getWorldSize()/2, MouseSim.getWorldSize()/2), null, null));
 		mice.add(new Mouse(new Position(5, 5), null, null));
 		mice.add(new Mouse(new Position(10, 5), null, null));	
+
 	}
 
 	public static void update() {
@@ -39,9 +43,18 @@ public class Colony {
 			}
 		}
 
+		while(!bornMice.isEmpty()) {
+			Mouse bornMouse = bornMice.remove();
+			mice.add(bornMouse);
+		}
+
 		if(mice.isEmpty()) {
 			MouseSim.endGame("all the mice have died.");
 		}
+	}
+
+	private static boolean canCreateMouse() {
+		return mice.size() < MAX_MICE;
 	}
 
 }

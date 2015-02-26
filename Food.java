@@ -10,7 +10,7 @@ public class Food {
 
 	//* Private Fields
 	private WorldNode container;
-	private static int food_in_existance = 0;
+	private static int food_in_existence = 0;
 
 	//* Public Methods
 	public static void foodFactory() {
@@ -28,7 +28,7 @@ public class Food {
 		this.CALORIES -= hunger;
 
 		if(this.CALORIES <= 0) {
-			food_in_existance--;
+			food_in_existence--;
 			container.remove(this);
 		}
 
@@ -41,11 +41,11 @@ public class Food {
 	}
 
 	private static boolean canGenerate() {
-		return food_in_existance < MAX_FOOD;
+		return food_in_existence < MAX_FOOD;
 	}
 
 	private static Food generateFood() {
-		food_in_existance++;
+		food_in_existence++;
 		return new Food();
 	}
 
