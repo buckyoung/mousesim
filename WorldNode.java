@@ -3,32 +3,34 @@ import java.util.ArrayList;
 public class WorldNode {
 
 	//* Private Constants
-	private static final String IMG_EMPTY = ".";
-	private static final String IMG_FOOD = "f";
-	private static final String IMG_MOUSE = "M";
+	private static final String IMG_EMPTY = " ";
+	//private static final String IMG_BABY = "~";
+	private static final String IMG_FOOD = "`";
+	private static final String IMG_MOUSE = "a";
 
 	//* Private Fields
-	private String representation;
+	private int col;
 	private ArrayList<Object> container;
+	private String representation;
+	private int row;
 
 	//* Public Methods
-	public WorldNode() {
-		representation = IMG_EMPTY;
+	public WorldNode(int row, int col) {
 		container = new ArrayList<>();
+		this.row = row;
+		this.col = col;
 	}
 
 	public void add(Food x) {
 		if(x == null) return;
 
 		container.add(x);
-		this.representation = IMG_FOOD;
 	}
 
 	public void add(Mouse x) {
 		if(x == null) return;
 
 		container.add(x);
-		this.representation = IMG_MOUSE;
 	}
 
 	public Food getAnyFood() {
@@ -60,13 +62,16 @@ public class WorldNode {
 
 	@Override
 	public String toString() {
+
 		if(container.isEmpty()) return IMG_EMPTY;
+
+		if(containsMouseAndGender(Gender.FEMALE)) return "@"; //DEBUG
 
 		if(containsAny(Mouse.class)) return IMG_MOUSE;
 
 		if(containsAny(Food.class)) return IMG_FOOD;
 
-		return representation;
+		return IMG_EMPTY;
 	}
 
 	//* Private Methods

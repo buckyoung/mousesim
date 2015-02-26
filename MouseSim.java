@@ -4,7 +4,7 @@ public class MouseSim {
 	
 	//* Private Constants
 	private static final int GAMESPEED = 350;
-	private static final int WORLDSIZE = 15;
+	private static final int WORLDSIZE = 25;
 
 	//* Public Variables
 	public static final boolean DEBUG = true;

@@ -9,7 +9,7 @@ public class World {
 
 		for(int i=0; i < SIZE; i++){
 			for(int j=0; j < SIZE; j++){
-				world[i][j] = new WorldNode();
+				world[i][j] = new WorldNode(i, j);
 			}
 		}
 	}
@@ -27,14 +27,16 @@ public class World {
 		System.out.println();
 		System.out.println();
 		for(int i=0; i < SIZE; i++){
-			System.out.print("\t");
+			System.out.print("\t ");
 			for(int j=0; j < SIZE; j++){
 				System.out.print(world[i][j] + " ");
 			}
-			System.out.println("");
+			System.out.println(" ");
 		}
-		System.out.println();
-		System.out.println();
+		System.out.print("\t ");
+		for(int i=0; i < SIZE+1; i++){
+			System.out.print("- ");
+		}
 		System.out.println();
 	}
 
