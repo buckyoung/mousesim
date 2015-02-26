@@ -1,15 +1,16 @@
 import java.util.Random;
 
 public class MouseSim {
+	
+	//* Private Constants
+	private static final int GAMESPEED = 350;
+	private static final int WORLDSIZE = 15;
+
 	//* Public Variables
 	public static final boolean DEBUG = true;
 	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
 
-	//* Private Constants
-	private static final int GAMESPEED = 200;
-	private static final int WORLDSIZE = 15;
-
-	//* Private Parameters
+	//* Private Fields
 	private static String endedReason;
 	private static boolean isRunning;
 	private static int runtime;
@@ -74,7 +75,7 @@ public class MouseSim {
 
 	private static void update() {
 		Colony.update();
-		Food.createRandom(); //REDO
+		Food.foodFactory();
 	}
 
 }

@@ -1,40 +1,52 @@
 public class Food {
 
-	private static final double MIN_NUTRITION = 4.23;
-	private static final double MAX_NUTRITION = 34.532;
-	public final double CALORIES; //Redo so a mouse can eat a bit of the food [make not final]
-
+	//* Private Constants
 	private static final int MAX_FOOD = 12;
+	private static final double MAX_NUTRITION = 34.532;
+	private static final double MIN_NUTRITION = 4.23;
+	
+	//* Public Fields
+	public double CALORIES;
+
+	//* Private Fields
+	private WorldNode container;
 	private static int food_in_existance = 0;
 
+	//* Public Methods
+	public static void foodFactory() {
+		if(canGenerate()) {
+			Food food = generateFood();
+			food.container = MouseSim.getWorld().getRandomWorldNode();
+			food.container.add(food);
+		}
+	}
+	
+	// Input: hunger // Returns: amt of calories eaten
+	public double eat(double hunger) {
+		double calories = this.CALORIES;
 
+		this.CALORIES -= hunger;
+
+		if(this.CALORIES <= 0) {
+			food_in_existance--;
+			container.remove(this);
+		}
+
+		return (calories <= hunger) ? calories : hunger;
+	}
+
+	//* Private Methods
 	private Food() {
 		CALORIES = MIN_NUTRITION+(MAX_NUTRITION-MIN_NUTRITION)*MouseSim.rand.nextDouble();
 	}
 
-	private static boolean canCreate() {
+	private static boolean canGenerate() {
 		return food_in_existance < MAX_FOOD;
 	}
 
-	private static Food create() {
-		if(canCreate()) {
-			food_in_existance++;
-			return new Food();
-		}
-
-		return null;
-	}
-
-	public static void createRandom() {
-		Food food = create();
-
-		if(food != null) {
-			MouseSim.getWorld().getRandomWorldNode().add((Food)food);
-		}
-	}
-
-	public void eat() {
-		food_in_existance--;
+	private static Food generateFood() {
+		food_in_existance++;
+		return new Food();
 	}
 
 }

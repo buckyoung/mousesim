@@ -2,14 +2,16 @@ import java.util.ArrayList;
 
 public class WorldNode {
 
+	//* Private Constants
 	private static final String IMG_EMPTY = ".";
-	private static final String IMG_MOUSE = "M";
 	private static final String IMG_FOOD = "f";
+	private static final String IMG_MOUSE = "M";
 
+	//* Private Fields
 	private String representation;
-
 	private ArrayList<Object> container;
 
+	//* Public Methods
 	public WorldNode() {
 		representation = IMG_EMPTY;
 		container = new ArrayList<>();
@@ -29,15 +31,14 @@ public class WorldNode {
 		this.representation = IMG_MOUSE;
 	}
 
-	public Food getAnyFood() { //REDO: shoudlnt return it -- mouse should eat it in place, so it can eat just a bit of it
-		if(containsAny(Food.class)) {
+	public Food getAnyFood() {
+		if(hasFood()) {
 			for(Object o : container) {
 				if(Food.class.isInstance(o)) {
-					return (Food) remove(o);
+					return (Food) o;
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -45,21 +46,11 @@ public class WorldNode {
 		return containsAny(Food.class);
 	}
 
-	private boolean containsAny(Class clazz) {
-		for (Object o : container) {
-			if (clazz.isInstance(o)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public Object remove(Object o) {
 		if(container.contains(o)){
 			container.remove(o);
 			return o;
 		}
-
 		return null;
 	}
 
@@ -72,6 +63,16 @@ public class WorldNode {
 		if(containsAny(Food.class)) return IMG_FOOD;
 
 		return representation;
+	}
+
+	//* Private Methods
+	private boolean containsAny(Class clazz) {
+		for (Object o : container) {
+			if (clazz.isInstance(o)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -2,10 +2,17 @@ import java.util.LinkedList;
 
 public class Colony {
 
+	//* Private Constants
 	private static final int MAX_MICE = 15;
 
+	//* Private Fields
 	private static LinkedList<Mouse> mice = new LinkedList<>();
 	private static LinkedList<Mouse> deadMice = new LinkedList<>();
+
+	//* Public Methods
+	public static void generateBaby(Mouse father, Mouse mother) {
+		
+	}
 
 	public static void generateMice(int number) {
 		//REDO: generate arbitrary amount with names and stuff
@@ -36,7 +43,6 @@ public class Colony {
 		if(mice.isEmpty()) {
 			MouseSim.endGame("all the mice have died.");
 		}
-
 	}
 
 }

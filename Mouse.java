@@ -4,38 +4,40 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class Mouse {
+	//* Private Constants
+		// Game Attributes
+	private static final double DEATH_FATIGUE = 100.0;
+	private static final double DEATH_HUNGER = 150.0;
+		// Mouse Attributes
 	private static final double AGERATE = 0.01;
-	private static final double RESTRATE = 1.55;
-
-	private static final double MIN_LIFESPAN = 3.5;
-	private static final double MAX_LIFESPAN = 8.9;
-	private final double LIFESPAN; // Max age before death
-	
-	private static final double MIN_HUNGERRATE = 0.09;
-	private static final double MAX_HUNGERRATE = 0.89;
-	private static final double MAX_HUNGER = 150.0; // Max hunger need before death
-	private final double HUNGERRATE;
-
-	private static final double MIN_FATIGUERATE = 0.01;
 	private static final double MAX_FATIGUERATE = 0.54;
-	private static final double MAX_FATIGUE = 100.0; // Max fatidgue need before death
+	private static final double MIN_FATIGUERATE = 0.01;
+	private static final double MAX_HUNGERRATE = 0.89;
+	private static final double MIN_HUNGERRATE = 0.09;
+	private static final double MAX_LIFESPAN = 8.9;
+	private static final double MIN_LIFESPAN = 3.5;
+	private static final double RESTRATE = 1.55;
+	private static final int SKIP_EAT = 7;
+	private static final int SKIP_REST = 35;
+
+	//*Private Fields
+		// Game Attributes
+	private final double LIFESPAN; // "death_age"
+	private int skipCycles;
+		// Mouse Attributes
+	private final double HUNGERRATE;
 	private final double FATIGUERATE;
-	
 	private double hunger, fatigue;
 	//thirst, discomfort, energy, sex, warmth, etc etc TODO "I have a lot of...______"
-
 	private double age; // how long it has been living
 	//health, sex(M/F), fit to breed, ispregnant, etc etc TODO
-
 	//TODO private HashMap<String, Boolean> statusAffects = new HashMap<>(); //weak, diseased, lactose intolerant, ispregnant? etc etc TODO
-
 	private final int birthday;
 	private boolean isAlive;
 	private final String name;
 	private Position position;
 	private int walkRate;
-
-	private int skipCycles;
+	
 
 	public Mouse(String name, Position p) {
 
@@ -61,34 +63,36 @@ public class Mouse {
 	}
 
 	private void adjustHunger(double amt) {
+		if(!isAlive) return;
+
 		hunger += amt;
 
 		if(hunger < 0.0) {
 			hunger = 0.0;
 		}
 
-		if(hunger > MAX_HUNGER) {
+		if(hunger > DEATH_HUNGER) {
 			this.die("starved to death");
 		}
 	}
 
 	private void adjustFatigue(double amt) {
+		if(!isAlive) return;
+
 		fatigue += amt;
 
 		if(fatigue < 0.0) {
 			fatigue = 0.0;
 		}
 
-		if(fatigue > MAX_FATIGUE) {
+		if(fatigue > DEATH_FATIGUE) {
 			this.die("died of exhaustion");
 		}
 	}
 
-	// private boolean canEat(Food food) {
-	// 	return hunger > food.CALORIES;
-	// }
-
 	private boolean canMove(Direction d, int steps) {
+		if(!isAlive) return false;
+
 		int size = MouseSim.getWorldSize();
 
 		switch(d) {
@@ -117,7 +121,7 @@ public class Mouse {
 		//Primative AI
 		WorldNode currentLocation = MouseSim.getWorld().getWorldNode(this.position);
 
-		if(currentLocation.hasFood() && hunger > 35.0) {//redo
+		if(currentLocation.hasFood() && hunger > 5.0) {//redo
 			return MouseAction.EAT;
 		}
 
@@ -137,10 +141,9 @@ public class Mouse {
 	}
 
 	private void eat(Food food) {
-		//if(canEat(food)) {
-			adjustHunger(-food.CALORIES);
-			food.eat();
-		//}
+		if(!isAlive) return;
+
+		adjustHunger(-food.eat(hunger));
 	}
 
 	public String getName() {
@@ -156,6 +159,7 @@ public class Mouse {
 	}
 
 	private void move(Direction d, int steps) {
+		if(!isAlive) return;
 
 		MouseSim.getWorld().getWorldNode(this.position).remove(this);
 
@@ -197,6 +201,7 @@ public class Mouse {
 	}
 
 	private void moveRandom(int steps) {
+		if(!isAlive) return;
 
 		switch(MouseSim.rand.nextInt(8)){
 			case 0:
@@ -245,6 +250,7 @@ public class Mouse {
 	}
 
 	private void printStats() {
+		if(!isAlive) return;
 
 		System.out.println("Name:   \t" + name);
 		System.out.println("Hunger: \t" + hunger);
@@ -280,7 +286,7 @@ public class Mouse {
 	public void update() {
 		if(!isAlive) return;
 		
-		updateAge(); if(!isAlive) return;
+		updateAge(); 
 		printStats();
 
 		if(skipCycles != 0) {
@@ -290,21 +296,21 @@ public class Mouse {
 
 		switch(chooseAction()) {
 			case MOVE:
-				moveRandom(this.walkRate); if(!isAlive) return;
-				adjustHunger(HUNGERRATE); if(!isAlive) return;
+				moveRandom(this.walkRate); 
+				adjustHunger(HUNGERRATE);
 			break;
 
 			case EAT:
 				Stream.update(name+" decided to eat!");
-				eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood());
-				skipCycles = 7;
+				this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood());
+				skipCycles = SKIP_EAT;
 			break;
 
 			case REST:
 				Stream.update(name+" decided to take a little snooze... zZzz...");
-				adjustFatigue(-RESTRATE * 30);
-				skipCycles = 30;
-				adjustHunger(HUNGERRATE * 3); if(!isAlive) return;
+				adjustFatigue(-RESTRATE * SKIP_REST);
+				skipCycles = SKIP_REST;
+				adjustHunger(HUNGERRATE * (SKIP_REST/10));
 			break;
 
 			default:
@@ -313,6 +319,8 @@ public class Mouse {
 	}
 
 	private void updateAge() {
+		if(!isAlive) return;
+
 		age += AGERATE;
 
 		if(age > LIFESPAN) {
