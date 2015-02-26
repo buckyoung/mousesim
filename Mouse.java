@@ -43,14 +43,14 @@ public class Mouse {
 	private AI brain;
 
 	//* Public Methods
-	public Mouse(String fname, String lname, Position pos, Mouse mother, Mouse father) {
+	public Mouse(Position pos, Mouse mother, Mouse father) {
 
 		this.birthday = MouseSim.getRuntime();
 		this.gender = (MouseSim.rand.nextInt(2) == 1) ? Gender.MALE : Gender.FEMALE;
 		this.isAlive = true;
 		this.father = father;
-		this.firstName = fname; //redo: generate name and remove from param list (pass in father lastname)
-		this.lastName = lname; //redo: generate
+		this.firstName = Name.generateFirstName(this.gender); 
+		this.lastName = Name.generateLastName();
 		this.mother = mother;
 		this.position = pos;
 		this.walkRate = 1;
