@@ -4,23 +4,22 @@ import java.util.Map.Entry;
 public class Mouse {
 	//* Private Constants
 		// Game Attributes
-	private static final double DEATH_FATIGUE = 100.0;
-	private static final double DEATH_HUNGER = 150.0;
+	private static final double NEED_DEATH = 100.0;
 		// Mouse Attributes
 	private static final double AGERATE = 0.01;
 	private static final double MAX_FATIGUERATE = 0.54;
 	private static final double MIN_FATIGUERATE = 0.01;
-	private static final double MAX_HUNGERRATE = 0.89;
-	private static final double MIN_HUNGERRATE = 0.09;
+	private static final double MAX_HUNGERRATE = 0.44;
+	private static final double MIN_HUNGERRATE = 0.045;
 	private static final double MAX_LIFESPAN = 8.9;
 	private static final double MIN_LIFESPAN = 3.5;
-	private static final double RESTRATE = 1.55;
+	private static final double RESTRATE = 1.55; //redo: make a physical attribute with low variability
 	private static final int SKIP_EAT = 7;
 	private static final int SKIP_REST = 35;
 
 	//*Private Fields
 		// Game Attributes
-	private final double LIFESPAN; // "death_age"
+	private final double LIFESPAN;
 	private int skipCycles;
 		// Mouse Attributes
 	private final double HUNGERRATE;
@@ -74,7 +73,7 @@ public class Mouse {
 			hunger = 0.0;
 		}
 
-		if(hunger > DEATH_HUNGER) {
+		if(hunger > NEED_DEATH) {
 			this.die("starved to death");
 		}
 	}
@@ -88,7 +87,7 @@ public class Mouse {
 			fatigue = 0.0;
 		}
 
-		if(fatigue > DEATH_FATIGUE) {
+		if(fatigue > NEED_DEATH) {
 			this.die("died of exhaustion");
 		}
 	}
@@ -296,7 +295,7 @@ public class Mouse {
 				skipCycles = SKIP_EAT;
 			break;
 
-			case REST:
+			case REST: // redo: make a smart decision about how long to rest? //wake up if another need gets critical?
 				Stream.update(name+" decided to take a little snooze... zZzz...");
 				adjustFatigue(-RESTRATE * SKIP_REST);
 				skipCycles = SKIP_REST;
@@ -318,10 +317,11 @@ public class Mouse {
 		}
 	}
 
-	private class AI {
+	/// redo: MENTAL ATTRIBUTES = BRAIN, PHYSICAL ATTRIBUTES = BODY, BOTH PASSED TO CHILD
+	private class AI { 
 		//* Private Constants
-		private static final double HUNGER_LIMIT = 15.3;
-		private static final double FATIGUE_LIMIT = 71.2;
+		private static final double HUNGER_LIMIT = 50.0; //Redo: set on a per-mouse basis -- pass to child
+		private static final double FATIGUE_LIMIT = 70.0; //Redo: set on a per-mouse basis -- pass to child
 
 		private Mouse body;
 
