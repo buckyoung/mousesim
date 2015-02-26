@@ -46,6 +46,10 @@ public class WorldNode {
 		return containsAny(Food.class);
 	}
 
+	public boolean hasPotentialPartner(Gender myGender) {
+		return containsMouseAndGender(myGender.opposite());
+	}
+
 	public Object remove(Object o) {
 		if(container.contains(o)){
 			container.remove(o);
@@ -69,6 +73,15 @@ public class WorldNode {
 	private boolean containsAny(Class clazz) {
 		for (Object o : container) {
 			if (clazz.isInstance(o)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsMouseAndGender(Gender gender) {
+		for (Object o : container) {
+			if (Mouse.class.isInstance(o) && ((Mouse)o).getGender() == gender) {
 				return true;
 			}
 		}

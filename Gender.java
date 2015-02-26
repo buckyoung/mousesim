@@ -7,6 +7,14 @@ public enum Gender {
 		representation = s;
 	}
 
+	public Gender opposite() {
+		if(this == Gender.MALE) {
+			return FEMALE;
+		} else {
+			return MALE;
+		}
+	}
+
 	@Override
 	public String toString() {
 		return representation;

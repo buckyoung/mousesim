@@ -14,13 +14,12 @@ public class Colony {
 		
 	}
 
-	public static void generateMice(int number) {
-		//REDO: generate arbitrary amount with names and stuff
-		mice.add(new Mouse("Harvey Wallsqueaker", new Position(0, 0), null, null));
-		mice.add(new Mouse("Norman Squeakswell", new Position(MouseSim.getWorldSize()-1, MouseSim.getWorldSize()-1), null, null));
-		mice.add(new Mouse("Ray Charles", new Position(MouseSim.getWorldSize()/2, MouseSim.getWorldSize()/2), null, null));
-		mice.add(new Mouse("Splinter", new Position(5, 5), null, null));
-		mice.add(new Mouse("Sam Mouser", new Position(10, 5), null, null));	
+	public static void generateMice(int number) { //REDO: generate arbitrary amount with names and stuff
+		mice.add(new Mouse("Harvey", "Wallsqueaker", new Position(0, 0), null, null));
+		mice.add(new Mouse("Norman", "Squeakswell", new Position(MouseSim.getWorldSize()-1, MouseSim.getWorldSize()-1), null, null));
+		mice.add(new Mouse("Ray", "Charles", new Position(MouseSim.getWorldSize()/2, MouseSim.getWorldSize()/2), null, null));
+		mice.add(new Mouse("Splinter", "Footclan", new Position(5, 5), null, null));
+		mice.add(new Mouse("Sam", "Mouser", new Position(10, 5), null, null));	
 	}
 
 	public static void update() {

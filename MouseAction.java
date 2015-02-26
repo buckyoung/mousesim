@@ -1,5 +1,6 @@
 public enum MouseAction {
 	MOVE,
 	EAT,
-	REST;
+	REST,
+	SEX;
 }
