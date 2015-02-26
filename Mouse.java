@@ -1,5 +1,3 @@
-//Note, a mouse is currently very wasteful, if he cannot eat the food then he just throws it away (and it disappears forever!) //TODO refactor this so he only eats a bit at a time and puts it back
-
 import java.util.HashMap;
 import java.util.Map.Entry;
 
