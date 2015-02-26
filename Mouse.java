@@ -29,19 +29,22 @@ public class Mouse {
 	//thirst, discomfort, energy, sex, warmth, etc etc TODO "I have a lot of...______"
 	private double age; // how long it has been living
 	//health, sex(M/F), fit to breed, ispregnant, etc etc TODO
-	//TODO private HashMap<String, Boolean> statusAffects = new HashMap<>(); //weak, diseased, lactose intolerant, ispregnant? etc etc TODO
+	//TODO private HashMap<String, Boolean> statusAffects = new HashMap<>(); //weak, diseased, lactose intolerant, ispregnant? etc etc TODO //sleepy (adjust fatigue limit)
 	private final int birthday;
+	private Gender gender;
 	private boolean isAlive;
 	private final String name;
 	private Position position;
 	private int walkRate;
-	
 
-	public Mouse(String name, Position p) {
+	private AI brain;
+	
+	public Mouse(String name, Position p, Mouse mother, Mouse father) {
 
 		this.birthday = MouseSim.getRuntime();
+		this.gender = (MouseSim.rand.nextInt(2) == 1) ? Gender.MALE : Gender.FEMALE;
 		this.isAlive = true;
-		this.name = name;
+		this.name = name; //redo: generate name and remove from param list (pass in father lastname)
 		this.position = p;
 		this.walkRate = 1;
 
@@ -51,12 +54,14 @@ public class Mouse {
 		this.fatigue = 0.0;
 		this.age = 0.0;
 
+		this.brain = new AI(this);
+
 		// Create life-rates
 		LIFESPAN = MIN_LIFESPAN + (MAX_LIFESPAN - MIN_LIFESPAN) * MouseSim.rand.nextDouble();
 		HUNGERRATE = MIN_HUNGERRATE + (MAX_HUNGERRATE - MIN_HUNGERRATE) * MouseSim.rand.nextDouble();
 		FATIGUERATE = MIN_FATIGUERATE + (MAX_FATIGUERATE - MIN_FATIGUERATE) * MouseSim.rand.nextDouble();
 		
-		Stream.update(name + " was born!");
+		Stream.update(name + " (" + gender + ") " + " was born!");
 		MouseSim.getWorld().getWorldNode(this.position).add((Mouse)this);
 	}
 
@@ -115,20 +120,7 @@ public class Mouse {
 		}
 	}
 
-	private MouseAction chooseAction() { //maybe refactor as private inner AI class that way the AI can have a ton of their own parameters
-		//Primative AI
-		WorldNode currentLocation = MouseSim.getWorld().getWorldNode(this.position);
 
-		if(currentLocation.hasFood() && hunger > 5.0) {//redo
-			return MouseAction.EAT;
-		}
-
-		if(fatigue > 70) {//redo
-			return MouseAction.REST;
-		}
-
-		return MouseAction.MOVE;
-	}
 
 	private void die(String reason) { //REDO
 		String message = name + " has " + reason + "! RIP (" + birthday + "-" + MouseSim.getRuntime() + ")";
@@ -292,7 +284,7 @@ public class Mouse {
 			return;
 		}
 
-		switch(chooseAction()) {
+		switch(brain.chooseAction()) {
 			case MOVE:
 				moveRandom(this.walkRate); 
 				adjustHunger(HUNGERRATE);
@@ -323,6 +315,32 @@ public class Mouse {
 
 		if(age > LIFESPAN) {
 			this.die("died of old age");
+		}
+	}
+
+	private class AI {
+		//* Private Constants
+		private static final double HUNGER_LIMIT = 15.3;
+		private static final double FATIGUE_LIMIT = 71.2;
+
+		private Mouse body;
+
+		private AI(Mouse body) {
+			this.body = body;
+		}
+
+		private MouseAction chooseAction() {
+			WorldNode currentLocation = MouseSim.getWorld().getWorldNode(body.position);
+
+			if(currentLocation.hasFood() && hunger > HUNGER_LIMIT) {
+				return MouseAction.EAT;
+			}
+
+			if(fatigue > FATIGUE_LIMIT) {
+				return MouseAction.REST;
+			}
+
+			return MouseAction.MOVE;
 		}
 	}
 
