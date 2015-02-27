@@ -26,6 +26,7 @@ public class Mouse {
 	private final String firstName;
 	private final Mouse mother; 
 	private Position position;
+	private boolean pregnant;
 	private int walkRate;
 
 	private AI brain;
@@ -62,6 +63,10 @@ public class Mouse {
 		
 		Stream.update(this.firstName + " " + this.dna.getLastName() + " (" + this.gender + ") was born!");
 		MouseSim.getWorld().getWorldNode(this.position).add((Mouse)this);
+	}
+
+	public void giveBirth(Mouse father) {
+		Colony.generateMice(MouseSim.getRandomInt(1,3), this.position, father, this);
 	}
 
 	public double getAge() {
@@ -121,6 +126,10 @@ public class Mouse {
 				Stream.history(getName() + " is feeling frisky...");
 				this.adjustArousal(-arousal); //set to 0
 				if(MouseSim.rand.nextInt((int)this.dna.getSexualPotency()) > 10) Colony.generateBaby(this.position, this, this); //redo -- get mother!
+
+				//TODO::::: 
+				//Scheduler.addEvent(new Event(MouseSim.getRunTime()+PREGNANCY_TIME, EventFunction.GIVE_BIRTH, TODO.FATHER, this));
+				//Somehow this needs to depend on the gender of this and if the mother is already preggers
 			break;
 
 			case REST: // redo: make a smart decision about how long to rest? //wake up if another need gets critical?

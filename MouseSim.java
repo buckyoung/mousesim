@@ -29,7 +29,7 @@ public class MouseSim {
 		return min + (max - min) * rand.nextDouble();
 	}
 
-	public static double getRandomInt(int min, int max) {
+	public static int getRandomInt(int min, int max) {
 		return min + (max - min) * rand.nextInt();
 	}
 
@@ -55,7 +55,7 @@ public class MouseSim {
 		runtime = 0;
 		world = new World(WORLDSIZEROW, WORLDSIZECOL);
 		
-		Colony.generateSeedMice(10);
+		Colony.generateMice(10, null, null, null);
 
 		gameLoop();
 	}
@@ -96,6 +96,7 @@ public class MouseSim {
 	private static void update() {
 		Colony.update();
 		Food.foodFactory();
+		Scheduler.update();
 	}
 
 }

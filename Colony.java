@@ -17,9 +17,13 @@ public class Colony {
 		}
 	}
 
-	public static void generateSeedMice(int number) { //REDO: generate arbitrary amount with names and stuff
-		while(number > 0) {
-			generateBaby(new Position(MouseSim.rand.nextInt(MouseSim.getWorldSizeRow()), MouseSim.rand.nextInt(MouseSim.getWorldSizeCol())), null, null);
+	public static void generateMice(int number, Position p, Mouse f, Mouse m) {
+		if(p == null) {
+			p = new Position(MouseSim.rand.nextInt(MouseSim.getWorldSizeRow()), MouseSim.rand.nextInt(MouseSim.getWorldSizeCol()));
+		}
+
+		while(number > 0) {	
+			generateBaby(p, f, m);
 			number--;
 		}
 	}
