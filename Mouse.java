@@ -5,26 +5,15 @@ public class Mouse {
 	//* Private Constants
 		// Game Attributes
 	private static final double NEED_DEATH = 100.0;
-		// Mouse Attributes
 	private static final double AGE_RATE = 0.01;
-	private static final double AROUSAL_RATE = 2.33; //redo: make a physical attribute with mid-hi variability
-	private static final double MAX_FATIGUE_RATE = 0.54;
-	private static final double MIN_FATIGUE_RATE = 0.01;
-	private static final double MAX_HUNGER_RATE = 0.44;
-	private static final double MIN_HUNGER_RATE = 0.045;
-	private static final double MAX_LIFESPAN = 8.9;
-	private static final double MIN_LIFESPAN = 3.5;
-	private static final double REST_RATE = 1.55; //redo: make a physical attribute with low variability
-	private static final int SKIP_EAT = 7;
-	private static final int SKIP_REST = 35;
+		// Mouse Attributes
+	// private static final int SKIP_EAT = 7; //compute with logs now
+	private static final int SKIP_REST = 35; //redo
 
 	//* Private Fields
 		// Game Attributes
-	private final double LIFESPAN;
 	private int skipCycles;
 		// Mouse Attributes
-	private final double HUNGER_RATE;
-	private final double FATIGUE_RATE;
 	private double arousal, hunger, fatigue;
 	//thirst, discomfort, energy, sex, warmth, etc etc TODO "I have a lot of...______"
 	private double age; // how long it has been living
@@ -35,22 +24,23 @@ public class Mouse {
 	private boolean isAlive;
 	private final Mouse father;
 	private final String firstName;
-	private final String lastName;
 	private final Mouse mother; 
 	private Position position;
 	private int walkRate;
 
 	private AI brain;
+	private DNA dna;
 
-	//* Public Methods
+	/*  
+	 * * * Public Methods * * *
+	 */
 	public Mouse(Position pos, Mouse mother, Mouse father) {
 
 		this.birthday = MouseSim.getRuntime();
 		this.gender = (MouseSim.rand.nextInt(2) == 1) ? Gender.MALE : Gender.FEMALE;
 		this.isAlive = true;
 		this.father = father;
-		this.firstName = Name.generateFirstName(this.gender); 
-		this.lastName = Name.generateLastName();
+		this.firstName = NameGenerator.generateFirstName(this.gender); 
 		this.mother = mother;
 		this.position = pos;
 		this.walkRate = 1;
@@ -63,14 +53,23 @@ public class Mouse {
 		this.age = 0.0;
 
 		this.brain = new AI(this);
-
-		// Create life-rates
-		LIFESPAN = MIN_LIFESPAN + (MAX_LIFESPAN - MIN_LIFESPAN) * MouseSim.rand.nextDouble();
-		HUNGER_RATE = MIN_HUNGER_RATE + (MAX_HUNGER_RATE - MIN_HUNGER_RATE) * MouseSim.rand.nextDouble();
-		FATIGUE_RATE = MIN_FATIGUE_RATE + (MAX_FATIGUE_RATE - MIN_FATIGUE_RATE) * MouseSim.rand.nextDouble();
 		
-		Stream.update(this.firstName + " " + this.lastName + " (" + this.gender + ") " + " was born!");
+		if(mother != null && father != null){
+			this.dna = new DNA(mother.getDNA(), father.getDNA());
+		} else {
+			this.dna = new DNA();
+		}
+		
+		Stream.update(this.firstName + " " + this.dna.getLastName() + " (" + this.gender + ") was born!");
 		MouseSim.getWorld().getWorldNode(this.position).add((Mouse)this);
+	}
+
+	public double getAge() {
+		return this.age;
+	}
+
+	public DNA getDNA() {
+		return this.dna;
 	}
 
 	public Gender getGender() {
@@ -78,7 +77,7 @@ public class Mouse {
 	}
 
 	public String getName() {
-		return this.firstName + " " + this.lastName;
+		return this.firstName + " " + this.dna.getLastName();
 	}
 
 	public Position getPosition() {
@@ -89,13 +88,17 @@ public class Mouse {
 		return this.isAlive;
 	}
 
+	public boolean isBaby() {
+		return this.age < this.dna.getPubertyAge();
+	}
+
 	public void update() {
 		if(!isAlive) return;
 		
 		updateAge(); 
-		printStats();
+		//printStats();
 
-		if(skipCycles != 0) {
+		if(skipCycles > 0) {
 			skipCycles--;
 			return;
 		}
@@ -103,30 +106,29 @@ public class Mouse {
 		switch(brain.decideAction()) {
 			case MOVE:
 				move(brain.decideDirection(this.walkRate), this.walkRate);
-				adjustArousal(AROUSAL_RATE);
-				adjustFatigue(FATIGUE_RATE);
-				adjustHunger(HUNGER_RATE);
+				adjustArousal(this.dna.getArousalRate());
+				adjustFatigue(this.dna.getFatigueRate());
+				adjustHunger(this.dna.getHungerRate());
 			break;
 
 			case EAT:
-				this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood());
-				adjustArousal(AROUSAL_RATE * SKIP_EAT);
-				skipCycles = SKIP_EAT;
-				Stream.update(getName() + " decided to eat!");
+				skipCycles = (int)(Math.log( this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood()) ) * 2);
+				adjustArousal(this.dna.getArousalRate() * skipCycles);
+				Stream.debug(getName() + " decided to eat for "+ skipCycles +" cycles");
 			break;
 
 			case SEX:
-				this.adjustArousal(-10000.0); //redo
-				Colony.generateBaby(this.position, this, this); //redo -- get mother?!
-				Stream.update(getName() + " is feeling frisky...");
+				Stream.history(getName() + " is feeling frisky...");
+				this.adjustArousal(-arousal); //set to 0
+				if(MouseSim.rand.nextInt((int)this.dna.getSexualPotency()) > 10) Colony.generateBaby(this.position, this, this); //redo -- get mother!
 			break;
 
 			case REST: // redo: make a smart decision about how long to rest? //wake up if another need gets critical?
-				adjustArousal(AROUSAL_RATE * SKIP_REST);
-				adjustFatigue(-REST_RATE * SKIP_REST);
-				adjustHunger(HUNGER_RATE * (SKIP_REST/10));
+				Stream.history(getName() + " decided to take a little snooze... zZzz...");
+				adjustArousal(this.dna.getArousalRate() * SKIP_REST);
+				adjustFatigue(-this.dna.getRestRate() * SKIP_REST);
+				adjustHunger(this.dna.getHungerRate() * (SKIP_REST/10));
 				skipCycles = SKIP_REST;
-				Stream.update(getName() + " decided to take a little snooze... zZzz...");
 			break;
 
 			default:
@@ -134,19 +136,17 @@ public class Mouse {
 
 	}
 
-	//* Private Methods
+	/*
+	 * * * Private Methods * * * 
+	 */
 	private void adjustArousal(double amt) {
-		if(!isAlive) return;
+		if(!isAlive || isBaby()) return;
 
 		arousal += amt;
 
 		if(arousal < 0.0) {
 			arousal = 0.0;
 		}
-
-		// if(arousal > NEED_DEATH) {
-		// 	this.die("starved to death");
-		// }
 	}
 
 	private void adjustHunger(double amt) {
@@ -182,13 +182,25 @@ public class Mouse {
 		Stream.update(message);
 
 		//Kill if not reincarnated
-		if(!this.reincarnation()) this.isAlive = false;;
+		if(!this.reincarnation()) {
+			this.isAlive = false;
+			//DEBUG -- print stats directly to history
+			if(this.father != null && this.mother != null) {
+				Stream.history("Father: " + this.father.getName() + "  |  Mother: " + this.mother.getName() + " " + this.dna);
+			} else {
+				Stream.history("Father: " + "[No Record]" + "  |  Mother: " + "[No Record]" + " " + this.dna);
+			}
+			//ENDDEBUG
+		}
 	}
 
-	private void eat(Food food) {
-		if(!isAlive) return;
+	private double eat(Food food) {
+		if(!isAlive) return 0.0;
 
-		adjustHunger(-food.eat(hunger));
+		double amt = food.eat(hunger);
+		adjustHunger(-amt);
+
+		return amt;
 	}
 
 	private void move(Direction d, int steps) {
@@ -240,7 +252,7 @@ public class Mouse {
 		System.out.println("Hunger: \t" + hunger);
 		System.out.println("Fatigue:\t" + fatigue);
 		System.out.println("Age:    \t" + age);
-		System.out.println(LIFESPAN + "  " + HUNGER_RATE + "  " + FATIGUE_RATE); //debugp
+		System.out.println(this.dna.getLifespan() + "  " + this.dna.getHungerRate() + "  " + this.dna.getFatigueRate()); //debug
 
 		System.out.println();
 	}
@@ -262,7 +274,7 @@ public class Mouse {
 
 		age += AGE_RATE;
 
-		if(age > LIFESPAN) {
+		if(this.age > this.dna.getLifespan()) {
 			this.die("died of old age");
 		}
 	}
@@ -271,9 +283,6 @@ public class Mouse {
 	//* Private Inner Class
 	private class AI { 
 		//* Private Constants
-		private static final double HUNGER_LIMIT = 50.0; //Redo: set on a per-mouse basis -- pass to child
-		private static final double FATIGUE_LIMIT = 70.0; //Redo: set on a per-mouse basis -- pass to child
-		private static final double AROUSAL_LIMIT = 90.0; //Redo: set on a per-mouse basis -- pass to child
 		private static final int CHANGE_DIRECTION_RATE = 2; // 1 in ...
 
 		private Mouse body;
@@ -287,15 +296,15 @@ public class Mouse {
 		private MouseAction decideAction() {
 			WorldNode currentLocation = MouseSim.getWorld().getWorldNode(body.position);
 
-			if(currentLocation.hasFood() && hunger > HUNGER_LIMIT) {
+			if(currentLocation.hasFood() && hunger > body.dna.getHungerLimit()) {
 				return MouseAction.EAT;
 			}
 
-			if(body.gender == Gender.MALE && arousal > AROUSAL_LIMIT && currentLocation.hasPotentialPartner(body.gender)) {
+			if(!body.isBaby() && arousal > body.dna.getArousalLimit() && currentLocation.hasPotentialPartner(body.gender)) {
 				return MouseAction.SEX;
 			}
 
-			if(fatigue > FATIGUE_LIMIT) {
+			if(fatigue > body.dna.getFatigueLimit()) {
 				return MouseAction.REST;
 			}
 
@@ -359,25 +368,26 @@ public class Mouse {
 		private boolean canMove(Direction d, int steps) {
 			if(!isAlive) return false;
 
-			int size = MouseSim.getWorldSize();
+			int sizeRow = MouseSim.getWorldSizeRow();
+			int sizeCol = MouseSim.getWorldSizeCol();
 
 			switch(d) {
 				case UP:
 					return body.position.row - steps >= 0 ;
 				case DOWN:
-					return body.position.row + steps <= size-1;
+					return body.position.row + steps <= sizeRow-1;
 				case LEFT:
 					return body.position.col - steps >= 0;
 				case RIGHT:
-					return body.position.col + steps <= size-1;
+					return body.position.col + steps <= sizeCol-1;
 				case UPLEFT:
 					return body.position.row - steps >= 0 && body.position.col - steps >= 0;
 				case UPRIGHT:
-					return body.position.row - steps >= 0 && body.position.col + steps <= size-1;
+					return body.position.row - steps >= 0 && body.position.col + steps <= sizeCol-1;
 				case DOWNLEFT:
-					return body.position.row + steps <= size-1 && body.position.col - steps >= 0;
+					return body.position.row + steps <= sizeRow-1 && body.position.col - steps >= 0;
 				case DOWNRIGHT:
-					return body.position.row + steps <= size-1 && body.position.col + steps <= size-1;
+					return body.position.row + steps <= sizeRow-1 && body.position.col + steps <= sizeCol-1;
 				default:
 					return false;
 			}

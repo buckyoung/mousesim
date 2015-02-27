@@ -3,8 +3,10 @@ import java.util.Random;
 public class MouseSim {
 	
 	//* Private Constants
+	private static final int MAX_RUNTIME = 5000; // set to -1 to disable
 	private static final int GAMESPEED = 350;
-	private static final int WORLDSIZE = 25;
+	private static final int WORLDSIZEROW = 25;
+	private static final int WORLDSIZECOL = 100;
 
 	//* Public Variables
 	public static final boolean DEBUG = true;
@@ -23,6 +25,14 @@ public class MouseSim {
 		isRunning = false;
 	}
 
+	public static double getRandomDouble(double min, double max) {
+		return min + (max - min) * rand.nextDouble();
+	}
+
+	public static double getRandomInt(int min, int max) {
+		return min + (max - min) * rand.nextInt();
+	}
+
 	public static int getRuntime() {
 		return runtime;
 	}
@@ -31,17 +41,21 @@ public class MouseSim {
 		return world;
 	}
 
-	public static int getWorldSize() {
-		return WORLDSIZE;
+	public static int getWorldSizeRow() {
+		return WORLDSIZEROW;
 	}
 	
+	public static int getWorldSizeCol() {
+		return WORLDSIZECOL;
+	}
+
 	//* Main 
 	public static void main(String[] args) {
 		isRunning = true;
 		runtime = 0;
-		world = new World(WORLDSIZE);
+		world = new World(WORLDSIZEROW, WORLDSIZECOL);
 		
-		Colony.generateMice(5);
+		Colony.generateSeedMice(10);
 
 		gameLoop();
 	}
@@ -55,12 +69,18 @@ public class MouseSim {
 	private static void gameLoop() {
 		while(isRunning) {
 			update();
-			render();
+			render(); //increments runtime
 			try{
 				Thread.sleep(50000/GAMESPEED);
 			} catch (InterruptedException e) {
 				return;
 			}
+			//DEBUG
+			if(MAX_RUNTIME>0 && runtime==MAX_RUNTIME) {
+				isRunning = false;
+				endedReason = "the maximum runtime was reached.";
+			}
+			//ENDDEBUG
 		}
 		System.out.println();
 		System.out.println("The game has ended because... " + endedReason);

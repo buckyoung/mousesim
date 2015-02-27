@@ -4,7 +4,7 @@ public class WorldNode {
 
 	//* Private Constants
 	private static final String IMG_EMPTY = " ";
-	//private static final String IMG_BABY = "~";
+	private static final String IMG_BABY = "~";
 	private static final String IMG_FOOD = "`";
 	private static final String IMG_MOUSE = "a";
 
@@ -65,6 +65,8 @@ public class WorldNode {
 
 		if(container.isEmpty()) return IMG_EMPTY;
 
+		if(containsMouseBaby()) return IMG_BABY;
+
 		if(containsMouseAndGender(Gender.FEMALE)) return "@"; //DEBUG
 
 		if(containsAny(Mouse.class)) return IMG_MOUSE;
@@ -77,7 +79,7 @@ public class WorldNode {
 	//* Private Methods
 	private boolean containsAny(Class clazz) {
 		for (Object o : container) {
-			if (clazz.isInstance(o)) {
+			if (clazz.isInstance(o) ) {
 				return true;
 			}
 		}
@@ -86,7 +88,16 @@ public class WorldNode {
 
 	private boolean containsMouseAndGender(Gender gender) {
 		for (Object o : container) {
-			if (Mouse.class.isInstance(o) && ((Mouse)o).getGender() == gender) {
+			if (Mouse.class.isInstance(o) && ((Mouse)o).getGender() == gender ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsMouseBaby() {
+		for (Object o : container) {
+			if (Mouse.class.isInstance(o) && ((Mouse)o).isBaby() ) {
 				return true;
 			}
 		}

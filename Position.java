@@ -7,4 +7,9 @@ public class Position {
 		col = c;
 	}
 
+	public Position(Position p) {
+		row = p.row;
+		col = p.col;
+	}
+
 }

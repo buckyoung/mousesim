@@ -13,17 +13,15 @@ public class Colony {
 	//* Public Methods
 	public static void generateBaby(Position position, Mouse father, Mouse mother) {
 		if(canCreateMouse()) {
-			bornMice.add(new Mouse(position, father, mother));
+			bornMice.add(new Mouse(new Position(position), father, mother));
 		}
 	}
 
-	public static void generateMice(int number) { //REDO: generate arbitrary amount with names and stuff
-		mice.add(new Mouse(new Position(0, 0), null, null));
-		mice.add(new Mouse(new Position(MouseSim.getWorldSize()-1, MouseSim.getWorldSize()-1), null, null));
-		mice.add(new Mouse(new Position(MouseSim.getWorldSize()/2, MouseSim.getWorldSize()/2), null, null));
-		mice.add(new Mouse(new Position(5, 5), null, null));
-		mice.add(new Mouse(new Position(10, 5), null, null));	
-
+	public static void generateSeedMice(int number) { //REDO: generate arbitrary amount with names and stuff
+		while(number > 0) {
+			generateBaby(new Position(MouseSim.rand.nextInt(MouseSim.getWorldSizeRow()), MouseSim.rand.nextInt(MouseSim.getWorldSizeCol())), null, null);
+			number--;
+		}
 	}
 
 	public static void update() {
@@ -36,6 +34,7 @@ public class Colony {
 			Mouse deadMouse = deadMice.remove();
 
 			mice.remove(deadMouse);
+			Stream.history("Colony Size: " + mice.size());
 			MouseSim.getWorld().getWorldNode(deadMouse.getPosition()).remove(deadMouse);
 
 			if(mice.size() == 1) {
@@ -46,6 +45,7 @@ public class Colony {
 		while(!bornMice.isEmpty()) {
 			Mouse bornMouse = bornMice.remove();
 			mice.add(bornMouse);
+			Stream.history("Colony Size: " + mice.size());
 		}
 
 		if(mice.isEmpty()) {

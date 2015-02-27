@@ -1,9 +1,9 @@
 public class Food {
 
 	//* Private Constants
-	private static final int MAX_FOOD = 12;
-	private static final double MAX_NUTRITION = 34.532;
-	private static final double MIN_NUTRITION = 4.23;
+	private static final int MAX_FOOD = 20;
+	private static final double MAX_NUTRITION = 84.532;
+	private static final double MIN_NUTRITION = 14.23;
 	
 	//* Public Fields
 	public double CALORIES;

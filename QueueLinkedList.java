@@ -17,11 +17,12 @@ public class QueueLinkedList<T> {
 
     public QueueLinkedList(int size) { 
         maxsize = size;
-
         history = new Out("HISTORY.txt");
     }
 
     public QueueLinkedList<T> enqueue(T ele) {
+        history.println(ele);
+
         Node current = last;
         last = new Node();
         last.ele = ele;
@@ -41,23 +42,23 @@ public class QueueLinkedList<T> {
         T ele = first.ele;
         first = first.next;
         if (--total == 0) last = null;
-        
-        history.println(ele);
     }
 
+    public void printStraightToHistory(String s) {
+        history.println(s);
+    } 
+
     public void close() {
-        history.println(this.toString());
         history.close();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         Node tmp = first;
         while (tmp != null) {
-            sb.append(tmp.ele).append("\n"); // latest last
-            //sb.insert(0, tmp.ele).insert(0, "\n"); // latest first
+            //sb.append(tmp.ele).append("\n"); // latest last
+            sb.insert(0, tmp.ele).insert(0, "\n"); // latest first
             tmp = tmp.next;
         }
         return sb.toString();
