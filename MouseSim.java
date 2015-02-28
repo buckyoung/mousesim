@@ -3,9 +3,9 @@ import java.util.Random;
 public class MouseSim {
 	
 	//* Private Constants
-	private static final int MAX_MICE = 150;
-	private static final int INITIAL_MICE = 35;
-	private static final int MAX_RUNTIME = 12000; // set to -1 to disable
+	private static int MAX_MICE = 150;
+	private static int INITIAL_MICE = 35;
+	private static int MAX_RUNTIME = 12000; // set to -1 to disable
 	private static final int GAMESPEED = 350;
 	private static final int WORLDSIZE_ROW = 25;
 	private static final int WORLDSIZE_COL = 100;
@@ -57,10 +57,21 @@ public class MouseSim {
 
 	//* Main 
 	public static void main(String[] args) {
+		if(args.length == 1 && args[0].equals("help")) {
+			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime");
+			return;
+		}
+
 		isRunning = true;
 		runtime = 0;
 		world = new World(WORLDSIZE_ROW, WORLDSIZE_COL);
-		
+
+		if(args.length == 3) {
+			INITIAL_MICE = Integer.parseInt(args[0]);
+			MAX_MICE = Integer.parseInt(args[1]);
+			MAX_RUNTIME = Integer.parseInt(args[2]);
+		}
+
 		Colony.generateMice(INITIAL_MICE, null, null, null);
 
 		gameLoop();
@@ -82,7 +93,7 @@ public class MouseSim {
 				return;
 			}
 			//DEBUG
-			if(MAX_RUNTIME>0 && runtime==MAX_RUNTIME) {
+			if(MAX_RUNTIME>0 && runtime==MAX_RUNTIME+1) {
 				isRunning = false;
 				endedReason = "the maximum runtime was reached.";
 			}
