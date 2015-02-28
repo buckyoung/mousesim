@@ -6,6 +6,8 @@ public class Mouse {
 		// Game Attributes
 	private static final double NEED_DEATH = 100.0;
 	private static final double AGE_RATE = 0.01;
+	private static final int GESTATION_TIME = 150;
+	private static final int SEXUAL_POTENCY_CUTOFF = 10;
 		// Mouse Attributes
 	// private static final int SKIP_EAT = 7; //compute with logs now
 	private static final int SKIP_REST = 35; //redo
@@ -17,7 +19,7 @@ public class Mouse {
 	private double arousal, hunger, fatigue;
 	//thirst, discomfort, energy, sex, warmth, etc etc TODO "I have a lot of...______"
 	private double age; // how long it has been living
-	//health, sex(M/F), fit to breed, ispregnant, etc etc TODO
+	//health, sex(M/F), fit to breed, etc etc TODO
 	
 	private final int birthday;
 	private Gender gender;
@@ -26,7 +28,7 @@ public class Mouse {
 	private final String firstName;
 	private final Mouse mother; 
 	private Position position;
-	private boolean pregnant;
+	private boolean isPregnant;
 	private int walkRate;
 
 	private AI brain;
@@ -35,7 +37,7 @@ public class Mouse {
 	/*  
 	 * * * Public Methods * * *
 	 */
-	public Mouse(Position pos, Mouse mother, Mouse father) {
+	public Mouse(Position pos, Mouse father, Mouse mother) {
 
 		this.birthday = MouseSim.getRuntime();
 		this.gender = (MouseSim.rand.nextInt(2) == 1) ? Gender.MALE : Gender.FEMALE;
@@ -44,6 +46,7 @@ public class Mouse {
 		this.firstName = NameGenerator.generateFirstName(this.gender); 
 		this.mother = mother;
 		this.position = pos;
+		this.isPregnant = false;
 		this.walkRate = 1;
 
 		skipCycles = 0;
@@ -56,7 +59,7 @@ public class Mouse {
 		this.brain = new AI(this);
 		
 		if(mother != null && father != null){
-			this.dna = new DNA(mother.getDNA(), father.getDNA());
+			this.dna = new DNA(father.getDNA(), mother.getDNA());
 		} else {
 			this.dna = new DNA();
 		}
@@ -66,11 +69,18 @@ public class Mouse {
 	}
 
 	public void giveBirth(Mouse father) {
+		if(!isAlive) return;
+		Stream.debug(this.getName() + " is pooping babies!");
 		Colony.generateMice(MouseSim.getRandomInt(1,3), this.position, father, this);
+		this.isPregnant = false;
 	}
 
 	public double getAge() {
 		return this.age;
+	}
+
+	public double getArousal() {
+		return this.arousal;
 	}
 
 	public DNA getDNA() {
@@ -97,6 +107,10 @@ public class Mouse {
 		return this.age < this.dna.getPubertyAge();
 	}
 
+	public boolean isPregnant() {
+		return this.isPregnant;
+	}
+
 	public void update() {
 		if(!isAlive) return;
 		
@@ -110,39 +124,72 @@ public class Mouse {
 
 		switch(brain.decideAction()) {
 			case MOVE:
-				move(brain.decideDirection(this.walkRate), this.walkRate);
-				adjustArousal(this.dna.getArousalRate());
-				adjustFatigue(this.dna.getFatigueRate());
-				adjustHunger(this.dna.getHungerRate());
+				actionMove();
 			break;
 
 			case EAT:
-				skipCycles = (int)(Math.log( this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood()) ) * 2);
-				adjustArousal(this.dna.getArousalRate() * skipCycles);
-				Stream.debug(getName() + " decided to eat for "+ skipCycles +" cycles");
+				actionEat();
 			break;
 
 			case SEX:
-				Stream.history(getName() + " is feeling frisky...");
-				this.adjustArousal(-arousal); //set to 0
-				if(MouseSim.rand.nextInt((int)this.dna.getSexualPotency()) > 10) Colony.generateBaby(this.position, this, this); //redo -- get mother!
-
-				//TODO::::: 
-				//Scheduler.addEvent(new Event(MouseSim.getRunTime()+PREGNANCY_TIME, EventFunction.GIVE_BIRTH, TODO.FATHER, this));
-				//Somehow this needs to depend on the gender of this and if the mother is already preggers
+				actionSex();
 			break;
 
 			case REST: // redo: make a smart decision about how long to rest? //wake up if another need gets critical?
-				Stream.history(getName() + " decided to take a little snooze... zZzz...");
-				adjustArousal(this.dna.getArousalRate() * SKIP_REST);
-				adjustFatigue(-this.dna.getRestRate() * SKIP_REST);
-				adjustHunger(this.dna.getHungerRate() * (SKIP_REST/10));
-				skipCycles = SKIP_REST;
+				actionRest();
 			break;
 
 			default:
 		}
 
+	}
+
+	private void actionMove() {
+		move(brain.decideDirection(this.walkRate), this.walkRate);
+		adjustArousal(this.dna.getArousalRate());
+		adjustFatigue(this.dna.getFatigueRate());
+		adjustHunger(this.dna.getHungerRate());
+	}
+
+	private void actionEat() {
+		skipCycles = (int)(Math.log( this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood()) ) * 2);
+		adjustArousal(this.dna.getArousalRate() * skipCycles);
+		Stream.history(getName() + " decided to eat for "+ skipCycles +" cycles");
+	}
+
+	private void actionSex() {
+		Stream.history(getName() + " is feeling frisky...");
+
+		Mouse unpregantFemalePartner = MouseSim.getWorld().getWorldNode(this.position).getUnpregnantFemale();
+
+		if(unpregantFemalePartner == null || unpregantFemalePartner.getArousal() < unpregantFemalePartner.getDNA().getArousalLimit())
+		return; //she doesnt exist or want to bone
+
+		unpregantFemalePartner.resetArousal();
+		this.resetArousal();
+		
+		if(MouseSim.rand.nextInt((int)this.dna.getSexualPotency()) > SEXUAL_POTENCY_CUTOFF) {
+			Scheduler.addEvent(new Event(GESTATION_TIME, EventFunction.GIVE_BIRTH, this, unpregantFemalePartner));
+			unpregantFemalePartner.conceive();
+			Stream.update(getName() +" planted a seed in "+unpregantFemalePartner.getName());
+		}
+	}
+
+	private void actionRest() {
+		Stream.history(getName() + " decided to take a little snooze... zZzz...");
+		adjustArousal(this.dna.getArousalRate() * SKIP_REST);
+		adjustFatigue(-this.dna.getRestRate() * SKIP_REST);
+		adjustHunger(this.dna.getHungerRate() * (SKIP_REST/10));
+		skipCycles = SKIP_REST;
+	}
+
+	public void resetArousal() {
+		this.adjustArousal(-this.arousal);
+	}
+
+	public void conceive() {
+		this.isPregnant = true;
+		//Stream.debug(this.getName() + " is expecting!!!!!!");
 	}
 
 	/*
@@ -190,17 +237,18 @@ public class Mouse {
 		String message = getName() + " has " + reason + "! RIP (" + birthday + "-" + MouseSim.getRuntime() + ")";
 		Stream.update(message);
 
-		//Kill if not reincarnated
-		if(!this.reincarnation()) {
-			this.isAlive = false;
-			//DEBUG -- print stats directly to history
-			if(this.father != null && this.mother != null) {
-				Stream.history("Father: " + this.father.getName() + "  |  Mother: " + this.mother.getName() + " " + this.dna);
-			} else {
-				Stream.history("Father: " + "[No Record]" + "  |  Mother: " + "[No Record]" + " " + this.dna);
-			}
-			//ENDDEBUG
+		if(this.reincarnation()) return; //Let die if not reincarnated
+
+		this.isAlive = false;
+		//DEBUG -- print stats directly to history
+		if(this.father != null && this.mother != null) {
+			Stream.history("Father: " + this.father.getName() + "  |  Mother: " + this.mother.getName() + " " + this.dna);
+		} else {
+			Stream.history("Father: " + "[No Record]" + "  |  Mother: " + "[No Record]" + " " + this.dna);
 		}
+		//ENDDEBUG
+
+		Statistics.incrementDead();
 	}
 
 	private double eat(Food food) {
@@ -309,7 +357,7 @@ public class Mouse {
 				return MouseAction.EAT;
 			}
 
-			if(!body.isBaby() && arousal > body.dna.getArousalLimit() && currentLocation.hasPotentialPartner(body.gender)) {
+			if(body.getGender() == Gender.MALE && !body.isBaby() && arousal > body.dna.getArousalLimit() && currentLocation.hasPotentialPartner(body.gender)) {
 				return MouseAction.SEX;
 			}
 

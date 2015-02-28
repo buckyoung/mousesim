@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class Colony {
 
 	//* Private Constants
-	private static final int MAX_MICE = 15;
+	private static final int MAX_MICE = MouseSim.getMaxMice();
 
 	//* Private Fields
 	private static LinkedList<Mouse> mice = new LinkedList<>();
@@ -18,21 +18,29 @@ public class Colony {
 	}
 
 	public static void generateMice(int number, Position p, Mouse f, Mouse m) {
+		Stream.history("Colony.generateMice("+number+")");
+
 		if(p == null) {
 			p = new Position(MouseSim.rand.nextInt(MouseSim.getWorldSizeRow()), MouseSim.rand.nextInt(MouseSim.getWorldSizeCol()));
 		}
 
-		while(number > 0) {	
+		while(number > 0) {
 			generateBaby(p, f, m);
 			number--;
 		}
 	}
 
 	public static void update() {
+		Statistics.colonyReset();
+
 		for(Mouse mouse : mice) {
 			mouse.update();
 			if(!mouse.isAlive()) deadMice.add(mouse);
+
+			Statistics.colonyInclude(mouse);
 		}
+
+		Statistics.colonyReady();
 
 		while(!deadMice.isEmpty()) {
 			Mouse deadMouse = deadMice.remove();
@@ -59,6 +67,10 @@ public class Colony {
 
 	private static boolean canCreateMouse() {
 		return mice.size() < MAX_MICE;
+	}
+
+	public static int getSize() {
+		return mice.size();
 	}
 
 }

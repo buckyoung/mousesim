@@ -1,6 +1,6 @@
 import java.util.Comparator;
 
-public class Event implements Comparator<Event> {
+public class Event implements Comparable {
 
 	private int fireTime;
 	private EventFunction eventFunction;
@@ -8,10 +8,10 @@ public class Event implements Comparator<Event> {
 	private Mouse father;
 
 	public Event(int time, EventFunction f,  Mouse father, Mouse mother) {
-		this.fireTime = time;
+		this.fireTime = MouseSim.getRuntime()+time;
 		this.eventFunction = f;
-		this.mother = mother;
 		this.father = father;
+		this.mother = mother;	
 	}
 
 	public EventFunction getEventFunction() {
@@ -22,20 +22,20 @@ public class Event implements Comparator<Event> {
 		return this.fireTime;
 	}
 
-	public Mouse getMother() {
-		return this.mother;
-	}
-
 	public Mouse getFather() {
 		return this.father;
 	}
 
+	public Mouse getMother() {
+		return this.mother;
+	}
+
 	@Override
-	public int compare(Event x, Event y){
-		if (x.getFireTime() < y.getFireTime()) {
+	public int compareTo(Object y){
+		if (this.getFireTime() < ((Event)y).getFireTime()) {
 			return -1;
 		}
-		if (x.getFireTime() > y.getFireTime()) {
+		if (this.getFireTime() > ((Event)y).getFireTime()) {
 			return 1;
 		}
 		return 0;

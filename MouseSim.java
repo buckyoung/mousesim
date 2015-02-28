@@ -3,11 +3,13 @@ import java.util.Random;
 public class MouseSim {
 	
 	//* Private Constants
-	private static final int MAX_RUNTIME = 5000; // set to -1 to disable
+	private static final int MAX_MICE = 150;
+	private static final int INITIAL_MICE = 35;
+	private static final int MAX_RUNTIME = 12000; // set to -1 to disable
 	private static final int GAMESPEED = 350;
-	private static final int WORLDSIZEROW = 25;
-	private static final int WORLDSIZECOL = 100;
-
+	private static final int WORLDSIZE_ROW = 25;
+	private static final int WORLDSIZE_COL = 100;
+	
 	//* Public Variables
 	public static final boolean DEBUG = true;
 	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
@@ -25,12 +27,16 @@ public class MouseSim {
 		isRunning = false;
 	}
 
+	public static int getMaxMice() {
+		return MAX_MICE;
+	}
+
 	public static double getRandomDouble(double min, double max) {
 		return min + (max - min) * rand.nextDouble();
 	}
 
-	public static int getRandomInt(int min, int max) {
-		return min + (max - min) * rand.nextInt();
+	public static int getRandomInt(int min, int max) { //includes both max and min
+		return rand.nextInt(max - min + 1) + min;
 	}
 
 	public static int getRuntime() {
@@ -42,20 +48,20 @@ public class MouseSim {
 	}
 
 	public static int getWorldSizeRow() {
-		return WORLDSIZEROW;
+		return WORLDSIZE_ROW;
 	}
 	
 	public static int getWorldSizeCol() {
-		return WORLDSIZECOL;
+		return WORLDSIZE_COL;
 	}
 
 	//* Main 
 	public static void main(String[] args) {
 		isRunning = true;
 		runtime = 0;
-		world = new World(WORLDSIZEROW, WORLDSIZECOL);
+		world = new World(WORLDSIZE_ROW, WORLDSIZE_COL);
 		
-		Colony.generateMice(10, null, null, null);
+		Colony.generateMice(INITIAL_MICE, null, null, null);
 
 		gameLoop();
 	}
@@ -88,7 +94,17 @@ public class MouseSim {
 
 	private static void render() {
 		clearConsole();
-		System.out.println("Runtime: " + runtime++); //debug?
+		
+		System.out.println(
+			"Runtime: " + runtime++ + (MAX_RUNTIME>0?" / "+MAX_RUNTIME:"") +
+			"\t Colony Size: " + Colony.getSize() + " / " + MAX_MICE + 
+			" ("+Statistics.getNumberMale()+"M|"+Statistics.getNumberFemale()+"F) ("+
+			Statistics.getNumberDead()+"dead)");
+		
+		System.out.println("Average Age of Colony: "+Statistics.getAverageAge()+" ("+Statistics.getNumberBaby()+"baby) " +"("+Statistics.getNumberPregnant()+"pregnant)");
+
+		System.out.println("Average Lifespan: "+Statistics.getAverageLifespan() +" [initial:"+Statistics.getInitialLifespan()+"]");
+
 		world.render();
 		Stream.print();
 	}

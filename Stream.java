@@ -1,6 +1,6 @@
 public class Stream {
 	
-	private static final int MAXHEADLINES = 10;
+	private static final int MAXHEADLINES = 12;
 	private static QueueLinkedList<String> headlines = new QueueLinkedList<>(MAXHEADLINES);
 
 	public static void close() {
@@ -22,4 +22,5 @@ public class Stream {
 	public static void debug(String s) {
 		if(MouseSim.DEBUG) headlines.enqueue(">>>"+MouseSim.getRuntime()+" "+s);
 	}
+
 }

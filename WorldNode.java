@@ -48,6 +48,17 @@ public class WorldNode {
 		return containsAny(Food.class);
 	}
 
+	public Mouse getUnpregnantFemale() {
+		if(hasPotentialPartner(Gender.MALE)) {
+			for(Object o : container) {
+				if(Mouse.class.isInstance(o) && ((Mouse)o).getGender() == Gender.FEMALE && ((Mouse)o).isPregnant() == false) {
+					return (Mouse) o;
+				}
+			}
+		}
+		return null;
+	}
+
 	public boolean hasPotentialPartner(Gender myGender) {
 		return containsMouseAndGender(myGender.opposite());
 	}

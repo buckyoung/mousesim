@@ -8,11 +8,7 @@ public enum Gender {
 	}
 
 	public Gender opposite() {
-		if(this == Gender.MALE) {
-			return FEMALE;
-		} else {
-			return MALE;
-		}
+		return (this == MALE) ? FEMALE : MALE;
 	}
 
 	@Override
