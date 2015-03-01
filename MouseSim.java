@@ -4,9 +4,9 @@ public class MouseSim {
 	
 	//* Private Constants
 	private static int MAX_MICE = 150;
-	private static int INITIAL_MICE = 35;
+	private static int INITIAL_MICE = 15;
 	private static int MAX_RUNTIME = 12000; // set to -1 to disable
-	private static final int GAMESPEED = 350;
+	private static final int GAMESPEED = 550;
 	private static final int WORLDSIZE_ROW = 25;
 	private static final int WORLDSIZE_COL = 100;
 	

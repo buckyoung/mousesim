@@ -1,7 +1,5 @@
 public class Statistics {
 
-	private static final int UPDATE = 30;
-
 	private static double ageAverage = 0.0;
 	private static double ageSummation = 0.0;
 
@@ -16,10 +14,10 @@ public class Statistics {
 	private static int numberDead = 0;
 
 	private static boolean isImpendingDoom = false;
+	private static boolean beyondInitialization = false;
 
 	public static void colonyReset() {
-		if(MouseSim.getRuntime() % UPDATE != 1) return;
-
+	
 		ageAverage = 0.0;
 		ageSummation = 0.0;
 
@@ -34,8 +32,7 @@ public class Statistics {
 	}
 
 	public static void colonyInclude(Mouse mouse) {
-		if(MouseSim.getRuntime() % UPDATE != 1) return;
-
+		
 		ageSummation += mouse.getAge();
 		lifespanSummation += mouse.getDNA().getLifespan();
 
@@ -54,19 +51,19 @@ public class Statistics {
 	}
 
 	public static void colonyReady() {
-		if(MouseSim.getRuntime() % UPDATE != 1) return;
-
+		
 		ageAverage = ageSummation / Colony.getSize();
 		lifespanAverage = lifespanSummation / Colony.getSize();
 
-		if(MouseSim.getRuntime() == 1){
+		if(!beyondInitialization && MouseSim.getRuntime() == 1){
 			initialLifespan = lifespanAverage;
-		}
-		if(numberMale == 0 && !isImpendingDoom) {
+			beyondInitialization = true;
+		} 
+		if(beyondInitialization && numberMale == 0 && !isImpendingDoom) {
 			Stream.update("IMPENDING DOOM: No more males!");
 			isImpendingDoom = true;
 		}
-		if(numberFemale == 0 && !isImpendingDoom) {
+		if(beyondInitialization  && numberFemale == 0 && !isImpendingDoom) {
 			Stream.update("IMPENDING DOOM: No more males!");
 			isImpendingDoom = true;
 		}
@@ -74,7 +71,7 @@ public class Statistics {
 	}
 
 	public static double getAverageAge() {
-		return (Math.floor((ageAverage * 100)))/100;
+		return (Math.floor((ageAverage * 10)))/10;
 	}
 
 	public static double getAverageLifespan() {

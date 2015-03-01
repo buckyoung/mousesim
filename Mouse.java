@@ -340,7 +340,7 @@ public class Mouse {
 	//* Private Inner Class
 	private class AI { 
 		//* Private Constants
-		private static final int CHANGE_DIRECTION_RATE = 2; // 1 in ...
+		private static final int CHANGE_DIRECTION_RATE = 12; // 1 in ...
 
 		private Mouse body;
 		private Direction lastDirection;
@@ -375,6 +375,10 @@ public class Mouse {
 				return lastDirection;
 			}
 
+			return moveRandom(steps);
+		}
+
+		private Direction moveRandom(int steps) {
 			switch(MouseSim.rand.nextInt(8)){
 				case 0:
 					if(canMove(Direction.UP, steps)) {
@@ -416,8 +420,7 @@ public class Mouse {
 						return Direction.DOWNRIGHT;
 					}
 				break;
-				default:
-
+				default:		
 			}
 			return null;
 		}
