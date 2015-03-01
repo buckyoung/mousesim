@@ -59,12 +59,12 @@ public class Statistics {
 			initialLifespan = lifespanAverage;
 			beyondInitialization = true;
 		} 
-		if(beyondInitialization && numberMale == 0 && !isImpendingDoom) {
-			Stream.update("IMPENDING DOOM: No more males!");
+		if(beyondInitialization && numberMale == 0 && numberPregnant == 0 && !isImpendingDoom) {
+			Stream.update("IMPENDING DOOM: No more males (and no one is pregant)!");
 			isImpendingDoom = true;
 		}
 		if(beyondInitialization  && numberFemale == 0 && !isImpendingDoom) {
-			Stream.update("IMPENDING DOOM: No more males!");
+			Stream.update("IMPENDING DOOM: No more females!");
 			isImpendingDoom = true;
 		}
 

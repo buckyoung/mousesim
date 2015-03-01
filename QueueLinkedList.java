@@ -58,7 +58,9 @@ public class QueueLinkedList<T> {
         Node tmp = first;
         while (tmp != null) {
             //sb.append(tmp.ele).append("\n"); // latest last
-            sb.insert(0, tmp.ele).insert(0, "\n"); // latest first
+            if( !((Update)tmp.ele).isStale() ){ //dont print if over 200 old
+                sb.insert(0, tmp.ele).insert(0, "\n"); // latest first
+            }
             tmp = tmp.next;
         }
         return sb.toString();
