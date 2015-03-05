@@ -6,7 +6,7 @@ public class MouseSim {
 	private static int MAX_MICE = 150;
 	private static int INITIAL_MICE = 20;
 	private static int MAX_RUNTIME = 12000; // set to -1 to disable
-	private static final int GAMESPEED = 550;
+	private static int GAMESPEED = 350;
 	private static final int WORLDSIZE_ROW = 25;
 	private static final int WORLDSIZE_COL = 100;
 	
@@ -57,8 +57,8 @@ public class MouseSim {
 
 	//* Main 
 	public static void main(String[] args) {
-		if(args.length == 1 && args[0].equals("help")) {
-			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime");
+		if(args.length != 0 && args.length != 4) {
+			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed");
 			return;
 		}
 
@@ -66,11 +66,12 @@ public class MouseSim {
 		runtime = 0;
 		world = new World(WORLDSIZE_ROW, WORLDSIZE_COL);
 
-		if(args.length == 3) {
+		if(args.length == 4) {
 			INITIAL_MICE = Integer.parseInt(args[0]);
 			MAX_MICE = Integer.parseInt(args[1]);
 			MAX_RUNTIME = Integer.parseInt(args[2]);
-		}
+			GAMESPEED = Integer.parseInt(args[3]);
+		} 
 
 		Colony.generateMice(INITIAL_MICE, null, null, null);
 
@@ -124,6 +125,8 @@ public class MouseSim {
 		Colony.update();
 		Food.foodFactory();
 		Scheduler.update();
+		PresidentController.update();
+		Statistics.update();
 	}
 
 }
