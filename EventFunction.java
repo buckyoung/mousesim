@@ -1,3 +1,4 @@
 public enum EventFunction {
-	GIVE_BIRTH
+	GIVE_BIRTH,
+	ELECT_PRESIDENT
 }

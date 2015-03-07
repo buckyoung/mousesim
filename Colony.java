@@ -50,7 +50,7 @@ public class Colony {
 			MouseSim.getWorld().getWorldNode(deadMouse.getPosition()).remove(deadMouse);
 
 			if(mice.size() == 1) {
-				Stream.update(mice.get(0).getName() + " is the last mouse alive! x_x");
+				Stream.update(mice.get(0) + " is the last mouse alive! x_x");
 			}
 		}
 
@@ -71,6 +71,13 @@ public class Colony {
 
 	public static int getSize() {
 		return mice.size();
+	}
+
+	public static Mouse getCandidate(Mouse notThisMouse) {
+		for(Mouse mouse : mice) {
+			if(mouse.getGender() == Gender.MALE && !mouse.isBaby() && mouse.isAlive() && (mouse.getAge()/mouse.getDNA().getLifespan() < 0.5) && mouse != notThisMouse) return mouse;
+		}
+		return null;
 	}
 
 }

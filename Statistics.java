@@ -94,11 +94,9 @@ public class Statistics {
 
 		if(Math.abs(ls-ils) < 1.0) return; // Update if interesting (delta of > 1)
 
-		Stream.update((ils < ls)? 
+		Stream.update((ils > ls)? 
 			"Your colony is devolving. Initial average lifespan was " + ils + " now the average lifespan is " + ls :
-			"Your colony is evolving! Initial average lifespan was " + ils + " now the average lifespan is " + ls);
-			
-		
+			"Your colony is evolving! Initial average lifespan was " + ils + " now the average lifespan is " + ls);		
 	}
 
 	public static double getAverageAge() {

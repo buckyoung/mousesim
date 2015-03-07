@@ -18,6 +18,12 @@ public class Scheduler {
 						e.getMother().giveBirth(e.getFather());
 					break;
 
+					case ELECT_PRESIDENT:
+						Mouse m = e.getWinningCandidate();
+						m.makePresident();
+						PresidentController.setPresident(m);
+					break;
+
 					default:
 				}
 

@@ -1,7 +1,7 @@
 public class Food {
 
 	//* Private Constants
-	private static final int MAX_FOOD = 20;
+	private static final int MAX_FOOD = (int)(Math.log(MouseSim.getWorldSizeRow()*MouseSim.getWorldSizeCol())*30);
 	private static final double MAX_NUTRITION = 84.532;
 	private static final double MIN_NUTRITION = 14.23;
 	

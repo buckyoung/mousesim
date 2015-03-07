@@ -29,6 +29,7 @@ public class Mouse {
 	private final Mouse mother; 
 	private Position position;
 	private boolean isPregnant;
+	private boolean isPresident;
 	private int walkRate;
 
 	private AI brain;
@@ -47,6 +48,7 @@ public class Mouse {
 		this.mother = mother;
 		this.position = pos;
 		this.isPregnant = false;
+		this.isPresident = false;
 		this.walkRate = 1;
 
 		skipCycles = 0;
@@ -64,13 +66,13 @@ public class Mouse {
 			this.dna = new DNA();
 		}
 		
-		Stream.update(this.firstName + " " + this.dna.getLastName() + " (" + this.gender + ") was born!");
+		//Stream.update(this.firstName + " " + this.dna.getLastName() + " (" + this.gender + ") was born!");
 		MouseSim.getWorld().getWorldNode(this.position).add((Mouse)this);
 	}
 
 	public void giveBirth(Mouse father) {
 		if(!isAlive) return;
-		Stream.debug(this.getName() + " is pooping babies!");
+		//Stream.debug(this + " is pooping babies!");
 		Colony.generateMice(MouseSim.getRandomInt(1,3), this.position, father, this);
 		this.isPregnant = false;
 	}
@@ -87,12 +89,25 @@ public class Mouse {
 		return this.dna;
 	}
 
+	public String getFatherName() {
+		return (this.father == null ? "(No Record)" : this.father.getName());
+	}
+
 	public Gender getGender() {
 		return this.gender;
 	}
 
+	public String getMotherName() {
+		return (this.mother == null ? "(No Record)" : this.mother.getName());
+	}
+
 	public String getName() {
-		return this.firstName + " " + this.dna.getLastName();
+		return (this.isAlive?"":"The Late ")+(this.isPresident?"President ":"")+this.firstName + " " + this.dna.getLastName();
+	}
+
+	public String getRepresention() {
+		String result = "" + this.dna.getLastName().charAt(0);
+		return result;
 	}
 
 	public Position getPosition() {
@@ -154,11 +169,11 @@ public class Mouse {
 	private void actionEat() {
 		skipCycles = (int)(Math.log( this.eat(MouseSim.getWorld().getWorldNode(this.position).getAnyFood()) ) * 2);
 		adjustArousal(this.dna.getArousalRate() * skipCycles);
-		Stream.history(getName() + " decided to eat for "+ skipCycles +" cycles");
+		Stream.history(this + " decided to eat for "+ skipCycles +" cycles");
 	}
 
 	private void actionSex() {
-		Stream.history(getName() + " is feeling frisky...");
+		Stream.history(this + " is feeling frisky...");
 
 		Mouse unpregantFemalePartner = MouseSim.getWorld().getWorldNode(this.position).getUnpregnantFemale();
 
@@ -171,12 +186,15 @@ public class Mouse {
 		if(MouseSim.rand.nextInt((int)this.dna.getSexualPotency()) > SEXUAL_POTENCY_CUTOFF) {
 			Scheduler.addEvent(new Event(GESTATION_TIME, EventFunction.GIVE_BIRTH, this, unpregantFemalePartner));
 			unpregantFemalePartner.conceive();
-			Stream.update(getName() +" planted a seed in "+unpregantFemalePartner.getName());
+			
+			if(isPresident){
+				Stream.update(this +" planted a seed in "+unpregantFemalePartner);
+			}
 		}
 	}
 
 	private void actionRest() {
-		Stream.history(getName() + " decided to take a little snooze... zZzz...");
+		Stream.history(this + " decided to take a little snooze... zZzz...");
 		adjustArousal(this.dna.getArousalRate() * SKIP_REST);
 		adjustFatigue(-this.dna.getRestRate() * SKIP_REST);
 		adjustHunger(this.dna.getHungerRate() * (SKIP_REST/10));
@@ -190,6 +208,13 @@ public class Mouse {
 	public void conceive() {
 		this.isPregnant = true;
 		//Stream.debug(this.getName() + " is expecting!!!!!!");
+	}
+
+	public void makePresident() {
+		if(!isAlive) return;
+		Stream.update(this + " has been elected president!");
+		this.isPresident = true;
+		Stream.update("All hail " + this + "!");
 	}
 
 	/*
@@ -234,19 +259,19 @@ public class Mouse {
 	}
 
 	private void die(String reason) { //REDO
-		String message = getName() + " has " + reason + "! RIP (" + birthday + "-" + MouseSim.getRuntime() + ")";
-		Stream.update(message);
+		String message = this + " has " + reason + "! RIP (" + birthday + "-" + MouseSim.getRuntime() + ")";
+		
+		if(isPresident) {
+			Stream.update(message);
+		} else {
+			Stream.history(message);
+		}
 
-		if(this.reincarnation()) return; //Let die if not reincarnated
+		//if(this.reincarnation()) return; //Let die if not reincarnated
 
 		this.isAlive = false;
-		//DEBUG -- print stats directly to history
-		if(this.father != null && this.mother != null) {
-			Stream.history("Father: " + this.father.getName() + "  |  Mother: " + this.mother.getName() + " " + this.dna);
-		} else {
-			Stream.history("Father: " + "[No Record]" + "  |  Mother: " + "[No Record]" + " " + this.dna);
-		}
-		//ENDDEBUG
+
+		Stream.history("Father: " + this.getFatherName() + "  |  Mother: " + this.getMotherName() + " " + this.dna);
 
 		Statistics.incrementDead();
 	}
@@ -305,7 +330,7 @@ public class Mouse {
 	private void printStats() {
 		if(!isAlive) return;
 
-		System.out.println("Name:   \t" + getName());
+		System.out.println("Name:   \t" + this);
 		System.out.println("Hunger: \t" + hunger);
 		System.out.println("Fatigue:\t" + fatigue);
 		System.out.println("Age:    \t" + age);
@@ -319,7 +344,7 @@ public class Mouse {
 			this.hunger = this.hunger / 2;
 			this.fatigue = this.fatigue / 3;
 			this.age = 0.0;
-			Stream.update(getName() + " was reincarnated! Amazing!");
+			Stream.update(this + " was reincarnated! Amazing!");
 			return true;
 		}
 
@@ -453,6 +478,11 @@ public class Mouse {
 			}
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return this.getName();
 	}
 
 }

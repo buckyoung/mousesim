@@ -7,9 +7,10 @@ public class MouseSim {
 	private static int INITIAL_MICE = 20;
 	private static int MAX_RUNTIME = 12000; // set to -1 to disable
 	private static int GAMESPEED = 350;
-	private static final int WORLDSIZE_ROW = 25;
-	private static final int WORLDSIZE_COL = 100;
-	
+	private static final int WORLDSIZE_ROW = 300;
+	private static final int WORLDSIZE_COL = 300;
+	private static int VIEWPORT_ROW = 25;
+	private static int VIEWPORT_COL = 25; 	
 	//* Public Variables
 	public static final boolean DEBUG = true;
 	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
@@ -57,22 +58,24 @@ public class MouseSim {
 
 	//* Main 
 	public static void main(String[] args) {
-		if(args.length != 0 && args.length != 4) {
-			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed");
+		if(args.length != 0 && args.length != 6) {
+			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed viewport_row viewport_col");
 			return;
 		}
 
 		isRunning = true;
-		runtime = 0;
-		world = new World(WORLDSIZE_ROW, WORLDSIZE_COL);
+		runtime = 0;	
 
-		if(args.length == 4) {
+		if(args.length == 6) {
 			INITIAL_MICE = Integer.parseInt(args[0]);
 			MAX_MICE = Integer.parseInt(args[1]);
 			MAX_RUNTIME = Integer.parseInt(args[2]);
 			GAMESPEED = Integer.parseInt(args[3]);
+			VIEWPORT_ROW = Integer.parseInt(args[4]);
+			VIEWPORT_COL = Integer.parseInt(args[5]);
 		} 
 
+		world = new World(WORLDSIZE_ROW, WORLDSIZE_COL, VIEWPORT_ROW, VIEWPORT_COL);
 		Colony.generateMice(INITIAL_MICE, null, null, null);
 
 		gameLoop();
@@ -116,6 +119,8 @@ public class MouseSim {
 		System.out.println("Average Age of Colony: "+Statistics.getAverageAge()+" ("+Statistics.getNumberBaby()+"baby) " +"("+Statistics.getNumberPregnant()+"pregnant)");
 
 		System.out.println("Average Lifespan: "+Statistics.getAverageLifespan() +" [initial:"+Statistics.getInitialLifespan()+"]");
+
+		System.out.println("Sitting President: " + (PresidentController.getPresident() == null ? "None":PresidentController.getPresident()+ " [son of "+ PresidentController.getPresident().getFatherName() +"]"));
 
 		world.render();
 		Stream.print();

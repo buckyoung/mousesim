@@ -1,7 +1,7 @@
 public class Stream {
 	
 	private static final int MAXHEADLINES = 12;
-	private static final int STALE_TIME = 250;
+	private static final int STALE_TIME = 400;
 	private static QueueLinkedList<Update> headlines = new QueueLinkedList<>(MAXHEADLINES);
 
 	public static void close() {
