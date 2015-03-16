@@ -5,6 +5,8 @@ public class World {
 	private final int VIEWROW;
 	private final int VIEWCOL;
 	private WorldNode[][] world;
+	private Mouse m;
+	private Position p;
 
 	public World(int rowsize, int colsize, int viewrow, int viewcol) {
 		ROWSIZE = rowsize;
@@ -32,17 +34,35 @@ public class World {
 		System.out.println();
 		System.out.println();
 		System.out.println();
-		for(int i=0; i < VIEWROW; i++){
+		int q = 0;
+		int w = 0;
+		int I = VIEWROW;
+		int J = VIEWCOL;
+		if(PresidentController.hasPresident()){
+			m = PresidentController.getPresident();
+			p = m.getPosition();
+			q = p.row - VIEWROW/2;
+			w = p.col - VIEWCOL/2;
+			I = p.row + VIEWROW/2;
+			J = p.col + VIEWCOL/2;
+			if(q < 0) q = 0;
+			if(w < 0) w = 0;
+			if(I > ROWSIZE) I = ROWSIZE;
+			if(J > COLSIZE) J = COLSIZE;
+			
+			//Stream.debug("i I: " + i + " " + I + "  | j J: "+j + " " + J);
+		} 
+		for(int i = q; i < I; i++){
 			System.out.print("\t ");
-			for(int j=0; j < VIEWCOL; j++){
+			for(int j = w; j < J; j++){
 				System.out.print(world[i][j]+" ");
 			}
 			System.out.println(" ");
 		}
-		System.out.print("\t ");
-		for(int i=0; i < VIEWCOL+1; i++){
-			System.out.print("- ");
-		}
+		// System.out.print("\t ");
+		// for(int k=0; k < J+1; k++){
+		// 	System.out.print("-"+" ");
+		// }
 		System.out.println();
 	}
 

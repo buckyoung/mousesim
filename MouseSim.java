@@ -7,10 +7,10 @@ public class MouseSim {
 	private static int INITIAL_MICE = 20;
 	private static int MAX_RUNTIME = 12000; // set to -1 to disable
 	private static int GAMESPEED = 350;
-	private static final int WORLDSIZE_ROW = 300;
-	private static final int WORLDSIZE_COL = 300;
+	private static final int WORLDSIZE_ROW = 500;
+	private static final int WORLDSIZE_COL = 500;
 	private static int VIEWPORT_ROW = 25;
-	private static int VIEWPORT_COL = 25; 	
+	private static int VIEWPORT_COL = 40; 	
 	//* Public Variables
 	public static final boolean DEBUG = true;
 	public static Random rand = new Random(Double.doubleToLongBits(Math.random()));
@@ -59,7 +59,7 @@ public class MouseSim {
 	//* Main 
 	public static void main(String[] args) {
 		if(args.length != 0 && args.length != 6) {
-			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed viewport_row viewport_col");
+			System.out.println("\t>> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed viewport_row viewport_col");
 			return;
 		}
 
@@ -120,7 +120,7 @@ public class MouseSim {
 
 		System.out.println("Average Lifespan: "+Statistics.getAverageLifespan() +" [initial:"+Statistics.getInitialLifespan()+"]");
 
-		System.out.println("Sitting President: " + (PresidentController.getPresident() == null ? "None":PresidentController.getPresident()+ " [son of "+ PresidentController.getPresident().getFatherName() +"]"));
+		System.out.println("[FOLLOWING] Sitting President: " + (PresidentController.getPresident() == null ? "None":PresidentController.getPresident()+ " [son of "+ PresidentController.getPresident().getFatherName() +"]"));
 
 		world.render();
 		Stream.print();
