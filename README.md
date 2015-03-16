@@ -20,4 +20,4 @@ or
 
 ---
 
-![alt text](http://www.buckyoung.com/mousesim/mousesim.png "MouseSim Screenshot")
+![alt text](http://www.buckyoung.com/mousesim/mousesim.png "MouseSim Screenshot") 
