@@ -56,7 +56,9 @@ public class MouseSim {
 
 	//* Main 
 	public static void main(String[] args) {
-		if(args.length != 0 && args.length != 4) {
+		int num_args = 4;
+
+		if(args.length != 0 && args.length != num_args) {
 			System.out.println(">> java MouseSim numStartingMice maxNumMice maxRuntime gameSpeed");
 			return;
 		}
@@ -64,7 +66,7 @@ public class MouseSim {
 		isRunning = true;
 		runtime = 0;	
 
-		if(args.length == 6) {
+		if(args.length == num_args) {
 			INITIAL_MICE = Integer.parseInt(args[0]);
 			MAX_MICE = Integer.parseInt(args[1]);
 			MAX_RUNTIME = Integer.parseInt(args[2]);

@@ -70,35 +70,35 @@ public class NameGenerator {
 	};
 
 	private static final String[] lastNames = {
-		//"Archer",
-		//"Beeblebrox",
-		//"Cheddarwood",
-		//"Dallas",
-		//"Echompsky",
-		//"Feynman",
-		//"Grayson",
-		//"Hagen",
-		//"Inderson",
-		//"Jammy",
-		//"Krieger",
-		//"Linden",
-		//"Mazerunner",
-		//"Neeter",
-		//"Oifey",
-		//"Pelleteater",
-		//"Quelcher",
-		//"Raffle",
-		//"Squeakswell",
-		//"Trexler",
-		//"Utah",
-		//"Viggis",
-		//"Wheelrunner",
-		//"Xane",
-		//"Yunt",
-		//"Zamyatin",
-		"\u2764", //heart
-		"\u262F", //yinyang
-		"\u2744", //snowflake
+		"Cheddarwood", 
+		"Wallsqueaker", 
+		"Squeakswell", 
+		"Swisser", 
+		"Mazerunner", 
+		"Wheelrunner", 
+		"Pelleteater", 
+		"Chompsky", 
+		"Skeeter", 
+		"Anderson",
+		"Whiskers",
+		"Zamyatin",
+		"Archer",
+		"Figgis",
+		"Woodhouse",
+		"Tunt",
+		"Kane",
+		"Belcher",
+		"Krieger",
+		"Trexler",
+		"Beeblebrox",
+		"Dallas",
+		"Zeus",
+		"Feynman",
+		"Hagen",
+		"Chah"
+		// "\u2764", //heart
+		// "\u262F", //yinyang
+		// "\u2744", //snowflake
 	};
 
 	public static String generateFirstName(Gender gender) {
