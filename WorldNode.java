@@ -48,6 +48,9 @@ public class WorldNode {
 	public boolean hasFood() {
 		return containsAny(Food.class);
 	}
+	public boolean hasPotentialPartner(Gender myGender) {
+		return containsAdultMouseAndGender(myGender.opposite());
+	}
 
 	public Mouse getUnpregnantFemale() {
 		if(hasPotentialPartner(Gender.MALE)) {
@@ -59,11 +62,7 @@ public class WorldNode {
 		}
 		return null;
 	}
-
-	public boolean hasPotentialPartner(Gender myGender) {
-		return containsMouseAndGender(myGender.opposite());
-	}
-
+	
 	public Object remove(Object o) {
 		if(container.contains(o)){
 			container.remove(o);
