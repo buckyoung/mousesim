@@ -2,15 +2,11 @@ public class World {
 
 	private final int ROWSIZE;
 	private final int COLSIZE;
-	private final int VIEWROW;
-	private final int VIEWCOL;
 	private WorldNode[][] world;
 
-	public World(int rowsize, int colsize, int viewrow, int viewcol) {
+	public World(int rowsize, int colsize) {
 		ROWSIZE = rowsize;
-		COLSIZE = colsize;
-		VIEWROW = viewrow;
-		VIEWCOL = viewcol;
+		COLSIZE = colsize; 
 		world = new WorldNode[ROWSIZE][COLSIZE];
 
 		for(int i=0; i < ROWSIZE; i++){
@@ -32,15 +28,15 @@ public class World {
 		System.out.println();
 		System.out.println();
 		System.out.println();
-		for(int i=0; i < VIEWROW; i++){
+		for(int i=0; i < ROWSIZE; i++){
 			System.out.print("\t ");
-			for(int j=0; j < VIEWCOL; j++){
+			for(int j=0; j < COLSIZE; j++){
 				System.out.print(world[i][j]+" ");
 			}
 			System.out.println(" ");
 		}
 		System.out.print("\t ");
-		for(int i=0; i < VIEWCOL+1; i++){
+		for(int i=0; i < COLSIZE+1; i++){
 			System.out.print("- ");
 		}
 		System.out.println();
