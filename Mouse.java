@@ -105,11 +105,6 @@ public class Mouse {
 		return (this.isAlive?"":"The Late ")+(this.isPresident?"President ":"")+this.firstName + " " + this.dna.getLastName();
 	}
 
-	// public String getRepresention() {
-	// 	String result = "" + this.dna.getLastName().charAt(0);
-	// 	return result;
-	// }
-
 	public Position getPosition() {
 		return this.position;
 	}

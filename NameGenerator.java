@@ -96,9 +96,6 @@ public class NameGenerator {
 		"Feynman",
 		"Hagen",
 		"Chah"
-		// "\u2764", //heart
-		// "\u262F", //yinyang
-		// "\u2744", //snowflake
 	};
 
 	public static String generateFirstName(Gender gender) {

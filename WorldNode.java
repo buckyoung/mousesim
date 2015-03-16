@@ -77,30 +77,10 @@ public class WorldNode {
 		if(container.isEmpty()) return IMG_EMPTY;
 		if(containsAdultMouseAndGender(Gender.FEMALE)) return IMG_FEMALE_MOUSE; 
 		if(containsAdultMouseAndGender(Gender.MALE)) return IMG_MALE_MOUSE;
-		//if(containsAdultMouse()) return getRepresentaionForAdultMouse();
 		if(containsMouseBaby()) return IMG_BABY;
 		if(containsAny(Food.class)) return IMG_FOOD;
 		return IMG_EMPTY;
 	}
-
-	//* Private Methods
-	// private String getRepresentaionForAdultMouse() {
-	// 	for (Object o : container) {
-	// 		if (Mouse.class.isInstance(o) && !((Mouse)o).isBaby() ) {
-	// 			return ((Mouse)o).getRepresention();
-	// 		}
-	// 	}
-	// 	return IMG_MALE_MOUSE;
-	// }  
-
-	// private String getRepresentaionForAdultMouseOfGender(Gender gender) {
-	// 	for (Object o : container) {
-	// 		if (Mouse.class.isInstance(o) && ((Mouse)o).getGender() == gender && !((Mouse)o).isBaby() ) {
-	// 			return ((Mouse)o).getRepresention();
-	// 		}
-	// 	}
-	// 	return IMG_MALE_MOUSE;
-	// } 
 
 	private boolean containsAny(Class clazz) {
 		for (Object o : container) {
@@ -119,15 +99,6 @@ public class WorldNode {
 		}
 		return false;
 	}
-
-	// private boolean containsAdultMouse() {
-	// 	for (Object o : container) {
-	// 		if (Mouse.class.isInstance(o) && !((Mouse)o).isBaby() ) {
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
 
 	private boolean containsAdultMouseAndGender(Gender gender) {
 		for (Object o : container) {
