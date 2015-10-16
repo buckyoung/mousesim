@@ -1,10 +1,12 @@
 public class NameGenerator {
 
 	private static final String[] maleNames = {
-		"Abe", 
+		"Abe",
+		"Albus",
 		"Andy", 
 		"Arthur",
 		"Benjy",
+		"B.F.",
 		"Bob",
 		"Caesar",
 		"Conan",
@@ -19,7 +21,7 @@ public class NameGenerator {
 		"Frankie",
 		"Frederer",
 		"Gene",
-		"Greg", 
+		"Greg",
 		"H.G.",
 		"Harvey", 
 		"J.R.R",
@@ -99,7 +101,8 @@ public class NameGenerator {
 		"Chah",
 		"Takumi",
 		"Silva",
-		"Ratburn"
+		"Ratburn",
+		"Skinner"
 	};
 
 	public static String generateFirstName(Gender gender) {
