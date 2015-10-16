@@ -25,6 +25,7 @@ public class NameGenerator {
 		"H.G.",
 		"Harvey", 
 		"J.R.R",
+		"Jorge",
 		"Jimmy",
 		"Kanye", 
 		"Karl", 
