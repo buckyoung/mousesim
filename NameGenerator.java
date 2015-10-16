@@ -14,6 +14,7 @@ public class NameGenerator {
 		"D-503",
 		"Doug",
 		"Ford",
+		"Francis",
 		"Frank", 
 		"Frankie",
 		"Frederer",
@@ -95,7 +96,10 @@ public class NameGenerator {
 		"Zeus",
 		"Feynman",
 		"Hagen",
-		"Chah"
+		"Chah",
+		"Takumi",
+		"Silva",
+		"Ratburn"
 	};
 
 	public static String generateFirstName(Gender gender) {
